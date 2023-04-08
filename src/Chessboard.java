@@ -178,7 +178,7 @@ public class Chessboard {
             }
             if (isLegal) {
                 // 目标是否可吃判断
-                if (Math.abs(grids[pos[0] + vector[0]][pos[1] + vector[1]]) * player <= 0) {
+                if (grids[pos[0] + vector[0]][pos[1] + vector[1]] * player <= 0) {
                     // 如果该点没有我方棋子，则进入下一步判断
                     if (map[pos[0] + vector[0]][pos[1] + vector[1]] != player * 20 && map[pos[0] + vector[0]][pos[1] + vector[1]] != player * 30 && Math.abs(grids[pos[0] + vector[0]][pos[1] + vector[1]]) != 0) {
                         // 如果该点不是我方陷阱，不是我方巢穴，且已被对手占领，则进入下一步判断
