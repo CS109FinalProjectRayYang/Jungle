@@ -1,4 +1,5 @@
-import java.lang.reflect.Array;
+package structures;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -86,6 +87,12 @@ public class Chessboard {
             }
             System.out.println();
         }
+    }
+    public void save() {
+
+    }
+    public void takeAction(int player, String command) {
+        // TODO: Need to Complete.
     }
     public void takeAction(int player, Scanner in) {
         ArrayList<int[]> poses = new ArrayList<>();

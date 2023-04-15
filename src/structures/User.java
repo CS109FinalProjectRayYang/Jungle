@@ -1,4 +1,4 @@
-package dataStructure;
+package structures;
 
 import java.io.BufferedWriter;
 import java.io.File;
