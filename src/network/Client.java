@@ -26,6 +26,7 @@ public class Client {
         //文本框
         //图片
         ImageIcon jungleImg = new ImageIcon("data/img/Jungle.jpg");
+        // source: https://www.zcool.com.cn/work/ZMzg3NjU3Njg=.html
         //标签
         JLabel jungleImgLabel = new JLabel(jungleImg);
         //字体

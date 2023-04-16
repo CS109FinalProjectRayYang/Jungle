@@ -93,7 +93,7 @@ public class Room {
                 writerRed.flush();
 
                 int nowPlayer = 1;
-                Chessboard chessboard = new Chessboard();
+                Chessboard_OLD chessboard = new Chessboard_OLD();
                 while (chessboard.isEnd() == 0) {
                     if (nowPlayer == 1) {
                         String command = readerBlue.readLine();

@@ -1,10 +1,20 @@
+
 package structures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Chessboard {
+
+/**
+ * 描述 : 一个完整的本地双人对战命令行斗兽棋。
+ * <p>
+ * 状态 : 为了更好适配图形化界面与项目结构，已弃用
+ * <p>
+ * {@code @Author}  : RayOvO
+ */
+
+public class Chessboard_OLD {
     // grids用于存放棋盘上的棋子数据，以左下角为坐标零点，坐标通过(x, y)表示
     /*
     grids中存放的数据中，绝对值分别表示：
@@ -92,7 +102,7 @@ public class Chessboard {
 
     }
     public void takeAction(int player, String command) {
-        // TODO: Need to Complete.
+
     }
     public void takeAction(int player, Scanner in) {
         ArrayList<int[]> poses = new ArrayList<>();
@@ -230,7 +240,7 @@ public class Chessboard {
     }
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Chessboard testBoard = new Chessboard();
+        Chessboard_OLD testBoard = new Chessboard_OLD();
         testBoard.initialBoard();
         int k = 1;
         while (testBoard.isEnd() == 0) {

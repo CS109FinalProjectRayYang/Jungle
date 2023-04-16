@@ -4,18 +4,62 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="035a4601-5e6e-43f7-8670-24370a3db16e" name="变更" comment="Add some detailed information&#10;Create User class and History class">
-      <change afterPath="$PROJECT_DIR$/data/img/Jungle.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/network/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/structures/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="035a4601-5e6e-43f7-8670-24370a3db16e" name="变更" comment="Add a simple GUI for Client, only achieved the switch between initial UI and local game select UI">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/Map1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/Map2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/Map3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/blue/grey/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/img/animals/red/grey/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/Chessboard_NEW.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/chesses/Chess.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/chesses/Elephant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/chesses/Lion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/chesses/Rat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/chesses/Tiger.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/players/ComputerPlayer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/players/HumanPlayer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/players/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/terrains/Den.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/terrains/Flat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/terrains/River.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/terrains/Terrain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/structures/terrains/Trap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chessboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Chessboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dataStructure/History.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/History.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dataStructure/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/network/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/细节文档/联机.md" beforeDir="false" afterPath="$PROJECT_DIR$/细节文档/联机.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/network/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/structures/Chessboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Chessboard_OLD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/structures/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Room.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,19 +87,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/ProjectRepository/ForkProjects/Jungle",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "editor.preferences.folding",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\ProjectRepository\IdeaProjects\Jungle\data\img" />
@@ -65,7 +112,7 @@
       <recent name="structures" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="应用程序.Lion">
     <configuration name="Client$GUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="network.Client$GUI" />
       <module name="Jungle" />
@@ -79,8 +126,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Lion" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="structures.chesses.Lion" />
+      <module name="Jungle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="structures.chesses.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="应用程序.Lion" />
         <item itemvalue="应用程序.Client$GUI" />
       </list>
     </recent_temporary>
@@ -102,7 +163,12 @@
       <workItem from="1681258461213" duration="4694000" />
       <workItem from="1681284299985" duration="6607000" />
       <workItem from="1681348084714" duration="2512000" />
-      <workItem from="1681556569998" duration="9246000" />
+      <workItem from="1681556569998" duration="11015000" />
+      <workItem from="1681572102428" duration="14000" />
+      <workItem from="1681603991294" duration="3193000" />
+      <workItem from="1681633550961" duration="2742000" />
+      <workItem from="1681647139773" duration="441000" />
+      <workItem from="1681647600083" duration="6936000" />
     </task>
     <task id="LOCAL-00001" summary="Add README.md File">
       <created>1680975484096</created>
@@ -118,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681285040904</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Add a simple GUI for Client, only achieved the switch between initial UI and local game select UI">
+      <created>1681569167267</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1681569167267</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,9 +209,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Add README.md File" />
     <MESSAGE value="Add some detailed information&#10;Create User class and History class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add some detailed information&#10;Create User class and History class" />
+    <MESSAGE value="Add a simple GUI for Client, only achieved the switch between initial UI and local game select UI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add a simple GUI for Client, only achieved the switch between initial UI and local game select UI" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
