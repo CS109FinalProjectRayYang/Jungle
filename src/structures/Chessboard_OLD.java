@@ -8,9 +8,9 @@ import java.util.Scanner;
 
 /**
  * 描述 : 一个完整的本地双人对战命令行斗兽棋。
- * <p>
+ * <p></p>
  * 状态 : 为了更好适配图形化界面与项目结构，已弃用
- * <p>
+ * <p></p>
  * {@code @Author}  : RayOvO
  */
 
@@ -102,7 +102,6 @@ public class Chessboard_OLD {
 
     }
     public void takeAction(int player, String command) {
-
     }
     public void takeAction(int player, Scanner in) {
         ArrayList<int[]> poses = new ArrayList<>();

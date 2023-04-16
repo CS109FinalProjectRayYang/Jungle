@@ -5,10 +5,12 @@ import structures.chesses.*;
 import structures.terrains.*;
 
 /**
- * 描述 : 棋盘类，用于储存棋子与地形
- * <p>
+ * 描述 : 棋盘类，用于储存棋子与地形。
+ * <p></p>
+ * 坐标 : 左下角为原点建立横x纵y坐标平面，坐标从1开始计数
+ * <p></p>
  * 状态 : initBoard方法未完成
- * <p>
+ * <p></p>
  * {@code @Author}  : RayOvO
  */
 
@@ -69,7 +71,10 @@ public class Chessboard_NEW {
      * 初始化棋盘，把棋子放到对应位置上
      */
     public void initBoard() {
+        // TODO: 完成intiBoard函数
         chessMap[1][1] = new Lion(-1, this);
+        chessMap[9][7] = new Lion(1, this);
+
     }
 
     /**
