@@ -158,8 +158,9 @@ public class Chess {
             ret = false;
         } else if (isInRiver(pos) && chessboard.getChess(nextPos) != null) {
             ret = false;
-        } else if (foodChain[chessboard.getChess(nextPos).getCapacity()]) {
-            ret = false;
+        } else if (chessboard.getChess(nextPos) != null) {
+            Chess chess = chessboard.getChess(nextPos);
+            ret = foodChain[chess.getCapacity()];
         }
         return ret;
     }
