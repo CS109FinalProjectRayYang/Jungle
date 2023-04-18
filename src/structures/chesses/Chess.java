@@ -119,7 +119,13 @@ public class Chess {
     }
     public ArrayList<int[]> getLegalMove_Swim(int[] pos) {
         ArrayList<int[]> ret = new ArrayList<>();
-        // TODO: Complete the method.
+        ArrayList<int[]> moves = Chess.getMoves();
+        for (int[] move : moves) {
+            if (isLegalRat(pos, move)) {
+                // 如果某个move合法，则将棋子进行该move后的坐标位置加入ret列表
+                ret.add(new int[]{pos[0] + move[0], pos[1] + move[1]});
+            }
+        }
         // 老鼠可以下水，且在水中不能被吃，也不能吃岸上的大象
         // 因此对某个move动作只需要做 是否越界 以及 在水中不能从陆地上有动物的地方上岸 两个判断
         return ret;
@@ -138,6 +144,22 @@ public class Chess {
 
             // 只有该棋子是对手的且比自己弱，才合法
             ret = chess.getTeam() != this.getTeam() && foodChain[chess.getCapacity()];
+        }
+        return ret;
+    }
+    private boolean isLegalRat(int[] pos, int[] move) {
+        boolean ret = true;
+
+        // 获得pos位置的棋子进行该move后的位置nextPos
+        int[] nextPos = new int[]{pos[0] + move[0], pos[1] + move[1]};
+
+        // 判断nextPos位置是否越界和遭遇河流，再判断该位置上有没有棋子，是否是对手的棋子，能不能吃
+        if (isOutOfBound(nextPos) ) {
+            ret = false;
+        } else if (isInRiver(pos) && chessboard.getChess(nextPos) != null) {
+            ret = false;
+        } else if (foodChain[chessboard.getChess(nextPos).getCapacity()]) {
+            ret = false;
         }
         return ret;
     }

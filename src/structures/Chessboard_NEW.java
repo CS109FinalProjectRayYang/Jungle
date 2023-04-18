@@ -71,10 +71,22 @@ public class Chessboard_NEW {
      * 初始化棋盘，把棋子放到对应位置上
      */
     public void initBoard() {
-        // TODO: 完成intiBoard函数
         chessMap[1][1] = new Lion(-1, this);
+        chessMap[3][1] = new Rat(-1, this);
+        chessMap[2][2] = new Dog(-1, this);
+        chessMap[3][3] = new Leopard(-1, this);
+        chessMap[3][5] = new Wolf(-1, this);
+        chessMap[2][6] = new Cat(-1, this);
+        chessMap[1][7] = new Tiger(-1, this);
+        chessMap[3][7] = new Elephant(-1, this);
+        chessMap[7][1] = new Elephant(1, this);
+        chessMap[9][1] = new Tiger(1, this);
+        chessMap[1][1] = new Cat(1, this);
+        chessMap[1][1] = new Wolf(1, this);
+        chessMap[1][1] = new Dog(1, this);
         chessMap[9][7] = new Lion(1, this);
-
+        chessMap[7][5] = new Leopard(1, this);
+        chessMap[6][7] = new Rat(1, this);
     }
 
     /**
