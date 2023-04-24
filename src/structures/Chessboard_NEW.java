@@ -187,6 +187,36 @@ public class Chessboard_NEW {
     public static Terrain getTerrain(int[] pos) {
         return terrains[pos[0]][pos[1]];
     }
+    public int isEnd() {
+        int ret = 0;
+        if (isWin(1)) {
+            ret = 1;
+        } else if (isWin(-1)) {
+            ret = -1;
+        }
+        return ret;
+    }
+    private boolean isWin(int team) {
+        boolean ableToMove = false;
+        boolean obtained = false;
+        for (int i = 0; i < sizeY; i++) {
+            for (int j = 0; j < sizeX; j++) {
+                if (chessMap[j][i] != null) {
+                    // 存在自己team可移动的棋子
+                    if (chessMap[j][i].getTeam() == team && chessMap[j][i].getLegalMove(new int[]{j, i}).size() != 0) {
+                        ableToMove = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (team == 1) {
+            obtained = chessMap[9][4] != null;
+        } else {
+            obtained = chessMap[1][4] != null;
+        }
+        return ableToMove && !obtained;
+    }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);

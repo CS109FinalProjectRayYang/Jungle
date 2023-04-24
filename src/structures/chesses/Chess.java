@@ -109,9 +109,11 @@ public class Chess {
 
         // 获得pos位置的棋子进行该move后的位置nextPos
         int[] nextPos = new int[]{pos[0] + move[0], pos[1] + move[1]};
-
-        // 判断nextPos位置是否越界和遭遇河流，再判断该位置上有没有棋子，是否是对手的棋子，能不能吃
-        if (isOutOfBound(nextPos) || isInRiver(nextPos)) {
+        if (nextPos[1] == 4) {
+            int a = 1;
+        }
+        // 判断nextPos位置是否越界或遭遇河流或是自己的兽穴，再判断该位置上有没有棋子，是否是对手的棋子，能不能吃
+        if (isOutOfBound(nextPos) || isInRiver(nextPos) || isDen(nextPos, team)) {
             ret = false;
         } else if (chessboard.getChess(nextPos) != null) {
             Chess chess = chessboard.getChess(nextPos);
@@ -159,6 +161,9 @@ public class Chess {
      */
     protected static boolean isInRiver(int[] pos) {
         return Chessboard_NEW.getTerrain(pos).getId() == 10;
+    }
+    protected static boolean isDen(int[] pos, int team) {
+        return Chessboard_NEW.getTerrain(pos).getId() == 30 && Chessboard_NEW.getTerrain(pos).getTeam() == team;
     }
 
     /**

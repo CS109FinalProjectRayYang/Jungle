@@ -12,6 +12,7 @@ public class Terrain {
     public Terrain(String name, int id, int team) {
         this.name = name;
         this.id = id;
+        this.team = team;
     }
 
     public String getName() {
