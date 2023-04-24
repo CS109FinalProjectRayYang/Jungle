@@ -189,23 +189,24 @@ public class Chessboard_NEW {
     }
     public int isEnd() {
         int ret = 0;
-        if (isWin(1)) {
-            ret = 1;
-        } else if (isWin(-1)) {
+        if (isLose(1)) {
             ret = -1;
+        } else if (isLose(-1)) {
+            ret = 1;
         }
         return ret;
     }
-    private boolean isWin(int team) {
+    private boolean isLose(int team) {
         boolean ableToMove = false;
         boolean obtained = false;
+        OUT:
         for (int i = 0; i < sizeY; i++) {
             for (int j = 0; j < sizeX; j++) {
                 if (chessMap[j][i] != null) {
                     // 存在自己team可移动的棋子
                     if (chessMap[j][i].getTeam() == team && chessMap[j][i].getLegalMove(new int[]{j, i}).size() != 0) {
                         ableToMove = true;
-                        break;
+                        break OUT;
                     }
                 }
             }
@@ -215,14 +216,14 @@ public class Chessboard_NEW {
         } else {
             obtained = chessMap[1][4] != null;
         }
-        return ableToMove && !obtained;
+        return !(ableToMove && !obtained);
     }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Chessboard_NEW chessboardNew = new Chessboard_NEW();
         chessboardNew.initBoard();
-        while (true) {
+        while (chessboardNew.isEnd() == 0) {
             chessboardNew.printBoard();
             System.out.print("Choose chess: ");
             int[] nowPos = new int[2];
