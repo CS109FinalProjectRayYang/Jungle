@@ -102,34 +102,8 @@ public class Chess {
      * @param pos
      * @return ArrayList 下一步的合法坐标位置列表
      */
-    public ArrayList<int[]> getLegalMove_Jump(int[] pos) {
-        ArrayList<int[]> ret = new ArrayList<>();
-        ArrayList<int[]> moves = Chess.getMoves();
 
-        // 通过modifyMoves使moves中的move动作能够跨越河流
-        modifyMoves(pos, moves);
 
-        // 判断每个move是否合法
-        for (int[] move : moves) {
-            if (isLegal(pos, move)) {
-                ret.add(new int[]{pos[0] + move[0], pos[1] + move[1]});
-            }
-        }
-        return ret;
-    }
-    public ArrayList<int[]> getLegalMove_Swim(int[] pos) {
-        ArrayList<int[]> ret = new ArrayList<>();
-        ArrayList<int[]> moves = Chess.getMoves();
-        for (int[] move : moves) {
-            if (isLegalRat(pos, move)) {
-                // 如果某个move合法，则将棋子进行该move后的坐标位置加入ret列表
-                ret.add(new int[]{pos[0] + move[0], pos[1] + move[1]});
-            }
-        }
-        // 老鼠可以下水，且在水中不能被吃，也不能吃岸上的大象
-        // 因此对某个move动作只需要做 是否越界 以及 在水中不能从陆地上有动物的地方上岸 两个判断
-        return ret;
-    }
     public boolean isLegal(int[] pos, int[] move) {
         boolean ret = true;
 
@@ -147,7 +121,7 @@ public class Chess {
         }
         return ret;
     }
-    private boolean isLegalRat(int[] pos, int[] move) {
+    protected boolean isLegalRat(int[] pos, int[] move) {
         boolean ret = true;
 
         // 获得pos位置的棋子进行该move后的位置nextPos
@@ -170,7 +144,7 @@ public class Chess {
      * @param pos
      * @return boolean 越界
      */
-    public boolean isOutOfBound(int[] pos) {
+    public static boolean isOutOfBound(int[] pos) {
         boolean ret = false;
         if (pos[0] <= 0 || pos[0] > Chessboard_NEW.getSizeX() || pos[1] <= 0 || pos[1] > Chessboard_NEW.getSizeY()) {
             ret = true;
@@ -183,7 +157,7 @@ public class Chess {
      * @param pos
      * @return boolean 遭遇河流
      */
-    private boolean isInRiver(int[] pos) {
+    protected static boolean isInRiver(int[] pos) {
         return Chessboard_NEW.getTerrain(pos).getId() == 10;
     }
 
@@ -192,46 +166,7 @@ public class Chess {
      * @param pos
      * @param moves
      */
-    public void modifyMoves(int[] pos, ArrayList<int[]> moves) {
-        // 迭代每一个move动作
-        for (int k = 0; k < moves.size(); k++) {
 
-            // 获取位置在pos的棋子通过该move动作后的坐标nextPos
-            int[] nextPos = new int[]{pos[0] + moves.get(k)[0], pos[1] + moves.get(k)[1]};
-
-            // 在nextPos不越界的前提下
-            if (!isOutOfBound(nextPos)) {
-
-                // 如果遭遇河流
-                if (isInRiver(nextPos)) {
-                    int i;
-                    // 最多只要跳三格就能跨越河流，因此从跳一格开始，每次尝试多跳一格，看看能否在不遇到老鼠挡路的情况下跳到对岸
-                    for (i = 1; i <= 3; i++) {
-
-                        // 获得跳i格后的新位置nextPos
-                        nextPos = new int[]{pos[0] + i * moves.get(k)[0], pos[1] + i * moves.get(k)[1]};
-
-                        // 无论跳到对岸还是被老鼠挡路都以break停下
-                        // 如果被挡路，则当前的nextPos应该在河里，无法通过isLegal判断，因此达成被老鼠挡路时不能跳跃的效果
-                        // 如果不被挡路，则nextPos应当在对岸，如果对岸有能吃的动物，则应当吃掉，如果对岸有吃不了的动物，亦无法通过isLegal判断，达成期望效果
-                        if (Chessboard_NEW.getTerrain(nextPos).getId() != 10) {
-
-                            // 如果当前坐标不再是河，则说明已经来到对岸
-                            break;
-                        } else if (getChessboard().getChess(nextPos) != null) {
-
-                            // 如果当前坐标是河，那么判断chessMap上这个点是不是空的
-                            // 因为除了老鼠别的动物都不能下水，所以当检测到这个点不是空的，就一定是老鼠，被老鼠挡路了
-                            break;
-                        }
-                    }
-
-                    // 更改当前move的正确步数
-                    moves.set(k, new int[]{i * moves.get(k)[0], i * moves.get(k)[1]});
-                }
-            }
-        }
-    }
 
     /**
      * //加载并返回左右上下四个move向量

@@ -4,18 +4,10 @@ import structures.Chessboard_NEW;
 
 import java.util.ArrayList;
 
-public class Lion extends Chess{
+public class Lion extends ChessJump{
     public Lion(int team, Chessboard_NEW chessboard) {
         super(team, 7, "Lion", chessboard);
     }
-    @Override
-    public ArrayList<int[]> getLegalMove(int[] pos) {
-        // 重写方法，把getLegalMove转变为getLegalMove_Jump
-        return getLegalMove_Jump(pos);
-    }
-    // 重写getLegalMove方法，则在调用lion.getLegalMove时会优先选择调用Lion类里的getLegalMove方法
-    // 而这里的方法又调用了getLegalMove_Jump方法，因此便绕过了Chess类的getLegalMove方法
-
 
     public static void main(String[] args) {
         // 仅做测试用，不用管下面这几行代码

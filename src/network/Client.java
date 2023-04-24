@@ -119,9 +119,7 @@ public class Client {
             mainFrame.setLocation(300, 150);
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.setSize(700, 500);
-            
-//            PackMainFrame packMainFrame = new PackMainFrame();
-//            packMainFrame.start();
+
         }
         private void loadInitButtonPanel() {
             // 设置 本地游戏、在线游戏、退出游戏 这三个按钮的基本属性，并加入监听
@@ -212,52 +210,5 @@ public class Client {
             public void actionPerformed(ActionEvent e) {
             }
         }
-        /*private class MainFrameAdapter extends ComponentAdapter {
-            static long t = -1;
-            @Override
-            public void componentResized(ComponentEvent e) {
-                if (t == -1) {
-                    t = System.currentTimeMillis();
-                } else if (System.currentTimeMillis() - t > 100) {
-                    
-                    int h = mainFrame.getHeight();
-                    mainFrameImg.setImage(mainFrameImgOrig.getImage().getScaledInstance(h * 7 / 5, h, Image.SCALE_DEFAULT));
-                    mapImg.setImage(mapImgOrig.getImage().getScaledInstance(h * 7 / 5, h, Image.SCALE_DEFAULT));
-                    System.out.println("窗口大小改变了");
-                    mainFrame.pack();
-                    t = System.currentTimeMillis();
-                }
-                
-            }
-        }*/
-        /*private class PackMainFrame extends Thread {
-            private int formerH = 500;
-            public void run() {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException ignored) {
-                }
-                while (true) {
-                    int h = mainFrame.getHeight();
-                    if (h != formerH) {
-                        try {
-                            sleep(100);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        h = mainFrame.getHeight();
-                        mainFrameImg.setImage(mainFrameImgOrig.getImage().getScaledInstance(h * 7 / 5, h, Image.SCALE_DEFAULT));
-                        mapImg.setImage(mapImgOrig.getImage().getScaledInstance(h * 7 / 5, h, Image.SCALE_DEFAULT));
-                        System.out.printf("窗口高度改变为%d",h);
-                        mainFrame.setSize(h * 7 / 5 + 150, h);
-                        formerH = mainFrame.getHeight();
-                    }
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-            }
-        }*/
     }
 }
