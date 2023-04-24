@@ -177,8 +177,8 @@ public class Chess {
 
         int[] moveLeft = new int[]{-1, 0};
         int[] moveRight = new int[]{1, 0};
-        int[] moveUp = new int[]{0, 1};
-        int[] moveDown = new int[]{0, -1};
+        int[] moveUp = new int[]{0, -1};
+        int[] moveDown = new int[]{0, 1};
 
         moves.add(moveLeft);
         moves.add(moveRight);

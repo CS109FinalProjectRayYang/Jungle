@@ -75,23 +75,23 @@ public class Chessboard_NEW {
      */
     public void initBoard() {
 
-        chessMap[1][1] = new Lion(-1, this);
-        chessMap[3][1] = new Rat(-1, this);
-        chessMap[2][2] = new Dog(-1, this);
-        chessMap[3][3] = new Leopard(-1, this);
-        chessMap[3][5] = new Wolf(-1, this);
-        chessMap[2][6] = new Cat(-1, this);
-        chessMap[1][7] = new Tiger(-1, this);
-        chessMap[3][7] = new Elephant(-1, this);
+        chessMap[1][7] = new Lion(-1, this);
+        chessMap[3][7] = new Rat(-1, this);
+        chessMap[2][6] = new Dog(-1, this);
+        chessMap[3][5] = new Leopard(-1, this);
+        chessMap[3][3] = new Wolf(-1, this);
+        chessMap[2][2] = new Cat(-1, this);
+        chessMap[1][1] = new Tiger(-1, this);
+        chessMap[3][1] = new Elephant(-1, this);
 
-        chessMap[7][1] = new Elephant(1, this);
-        chessMap[9][1] = new Tiger(1, this);
-        chessMap[8][2] = new Cat(1, this);
-        chessMap[7][3] = new Wolf(1, this);
-        chessMap[8][6] = new Dog(1, this);
-        chessMap[9][7] = new Lion(1, this);
-        chessMap[7][5] = new Leopard(1, this);
-        chessMap[7][7] = new Rat(1, this);
+        chessMap[7][7] = new Elephant(1, this);
+        chessMap[9][7] = new Tiger(1, this);
+        chessMap[8][6] = new Cat(1, this);
+        chessMap[7][5] = new Wolf(1, this);
+        chessMap[7][3] = new Leopard(1, this);
+        chessMap[8][2] = new Dog(1, this);
+        chessMap[9][1] = new Lion(1, this);
+        chessMap[7][1] = new Rat(1, this);
     }
 
     /**
@@ -108,8 +108,8 @@ public class Chessboard_NEW {
      * 将棋盘状态在命令行中打印出来，仅用于完成GUI前的调试测试
      */
     public void printBoard() {
-        for (int i = 7; i > 0; i--) {
-            for (int j = 1; j <= 9; j++) {
+        for (int i = 1; i <= sizeY; i++) {
+            for (int j = 1; j <= sizeX; j++) {
                 if (chessMap[j][i] != null) {
                     System.out.printf(" %c ", chessMap[j][i].getChessName().charAt(0));
                 } else {
