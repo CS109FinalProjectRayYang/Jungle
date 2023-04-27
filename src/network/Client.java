@@ -1,15 +1,53 @@
 package network;
 
+import structures.Chessboard_NEW;
+import structures.Game;
+import structures.chesses.Chess;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class Client {
+    static GUI myGUI;
+    static int nowPlayer;
+    static Game game;
+
+    public static void setNowPlayer(int nowPlayer) {
+        Client.nowPlayer = nowPlayer;
+    }
+
     public static void main(String[] args) {
+
+        try {
+            String lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
+            UIManager.setLookAndFeel(lookAndFeel);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        game = new Game();
+        myGUI = new GUI();
+        myGUI.run();
 
     }
     private static class GUI {
+        //当前页面
+        // 0 : 无页面
+        // 1 : 主页面
+        // 2 : 本地游戏页面
+        // 3 : 联机游戏页面
+        // 4 : 游戏进行中页面
+        int page = 0;
+        //是否有
+        boolean clicked = false;
+        int[] clickedPos = new int[2];
+        ArrayList<int[]> legalMove;
         //窗体
         JFrame mainFrame;
         //面板
@@ -38,20 +76,6 @@ public class Client {
         JLabel mapImgLabel = new JLabel(mapImg);
         //字体
         Font buttonFont = new Font("楷体", Font.BOLD, 20);
-        public static void main(String[] args) {
-            // 设置Swing窗体风格
-            try {
-                String lookAndFeel = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
-                UIManager.setLookAndFeel(lookAndFeel);
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            // 新建GUI对象并运行
-            GUI gui = new GUI();
-            gui.run();
-        }
         public void run() {
             // 加载主窗体
             loadMainFrame();
@@ -72,6 +96,8 @@ public class Client {
             initPaint();
         }
         private void initPaint() {
+            page = 1;
+
             // 清空主窗体
             mainFramePanel.removeAll();
 
@@ -85,6 +111,8 @@ public class Client {
             mainFrame.setVisible(true);
         }
         private void localGamePaint() {
+            page = 2;
+
             // 清空主窗体
             mainFramePanel.removeAll();
 
@@ -97,9 +125,11 @@ public class Client {
             mainFrame.pack();
         }
         private void onlineGamePaint() {
-
+            page = 3;
         }
         private void gamePaint() {
+            page = 4;
+
             mainFramePanel.removeAll();
 
             mainFramePanel.add(mapImgLabel);
@@ -107,6 +137,9 @@ public class Client {
 
             mainFrame.setLocation(200, 100);
             mainFrame.pack();
+
+            GameStart gameStart = new GameStart();
+            gameStart.start();
         }
         private void loadMainFrame() {
             // 设置主窗体面板的布局
@@ -120,6 +153,54 @@ public class Client {
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.setSize(700, 500);
 
+            mainFrame.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    //在游戏中才生效
+                    if (page == 4) {
+                        int[] clickPos = getClickPos(e);
+                        System.out.printf("(%d, %d) Clicked.\n", clickPos[0], clickPos[1]);
+                        click(clickPos);
+                    }
+                }
+            });
+
+        }
+        private void click(int[] clickPos) {
+            if (!clicked) {
+                Chess chess = game.getChessboard().getChess(clickPos);
+                if (chess != null && chess.getTeam() == nowPlayer) {
+                    clickedPos = clickPos;
+                    legalMove = chess.getLegalMove(clickPos);
+                    clicked = true;
+                    for (int[] move : legalMove) {
+                        System.out.printf("(%d, %d)\n", move[0], move[1]);
+                    }
+                } else {
+                    System.out.println("Illegal Click");
+                }
+            } else {
+                boolean isLegalMove = false;
+                for (int[] move : legalMove) {
+                    if (move[0] == clickPos[0] && move[1] == clickPos[1]) {
+                        isLegalMove = true;
+                        break;
+                    }
+                }
+                if (isLegalMove) {
+                    game.getChessboard().moveChess(clickedPos, clickPos);
+                    game.input("Finished.");
+                } else {
+                    System.out.println("Illegal Click");
+                }
+                clicked = false;
+            }
+        }
+        private int[] getClickPos(MouseEvent e) {
+            int[] ret = new int[2];
+            ret[0] = (e.getX() - 70) / 80;
+            ret[1] = (e.getY() - 70) / 80;
+            return ret;
         }
         private void loadInitButtonPanel() {
             // 设置 本地游戏、在线游戏、退出游戏 这三个按钮的基本属性，并加入监听
@@ -208,6 +289,12 @@ public class Client {
         private class pauseButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
+            }
+        }
+        class GameStart extends Thread {
+            @Override
+            public void run() {
+                game.start();
             }
         }
     }

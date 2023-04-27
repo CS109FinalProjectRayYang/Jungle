@@ -37,7 +37,8 @@ public class Game {
         chessboard.initBoard();
         System.out.println("Game Started!");
         while (chessboard.isEnd() == 0) {
-            System.out.print("Waiting...");
+            chessboard.printBoard();
+            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
             inputted = false;
             Client.setNowPlayer(nowPlayer);
             while (!inputted) {
