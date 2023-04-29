@@ -36,11 +36,15 @@ public class Chess {
         // capacity默认 = chessID，只有在进入敌方陷阱的时候capacity会变成0
         // 大capacity能吃小capacity动物
         for (int i = 0; i < 9; i++) {
-            foodChain[i] = i < chessID;
+            foodChain[i] = i <= chessID;
         }
         // 老鼠是例外，如果该棋子是老鼠，那么老鼠能吃capacity是8的动物，即大象
         if (chessID == 1) {
             foodChain[8] = true;
+        }
+        // 大象是例外，大象不能吃老鼠
+        if (chessID == 8) {
+            foodChain[1] = false;
         }
     }
 
