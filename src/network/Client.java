@@ -3,6 +3,8 @@ package network;
 import structures.Chessboard_NEW;
 import structures.Game;
 import structures.chesses.Chess;
+import structures.players.ComputerPlayer;
+import structures.players.HumanPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ import javax.swing.JOptionPane;
 public class Client {
     static GUI myGUI;
     static int nowPlayer;
-    static Game game;
+    static Game game = new Game();
 
     public static void setNowPlayer(int nowPlayer) {
         Client.nowPlayer = nowPlayer;
@@ -35,7 +37,6 @@ public class Client {
             throw new RuntimeException(e);
         }
 
-        game = new Game();
         myGUI = new GUI();
         myGUI.run();
 
@@ -160,7 +161,6 @@ public class Client {
             mainFrame.setLocation(200, 100);
             mainFrame.pack();
 
-            game = new Game();
             GameStart gameStart = new GameStart();
             gameStart.start();
         }
@@ -348,6 +348,8 @@ public class Client {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                game = new Game();
+                game.setPlayer(new HumanPlayer(), new HumanPlayer());
                 gamePaint();
             }
         }
@@ -355,6 +357,8 @@ public class Client {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                game = new Game();
+                game.setPlayer(new HumanPlayer(), new ComputerPlayer());
                 gamePaint();
             }
         }

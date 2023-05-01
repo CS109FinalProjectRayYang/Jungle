@@ -2,6 +2,7 @@ package structures.players;
 
 import structures.Chessboard_NEW;
 import structures.Chessboard_OLD;
+import structures.Game;
 
 public class Player {
     // 身份
@@ -12,7 +13,7 @@ public class Player {
     public Player(int identity) {
         this.identity = identity;
     }
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer) {
+    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
 
     }
     public int getIdentity() {

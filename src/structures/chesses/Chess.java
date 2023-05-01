@@ -58,6 +58,14 @@ public class Chess {
         return capacity;
     }
 
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public boolean ableToEat(int capacity) {
+        return foodChain[capacity];
+    }
+
     public String getChessName() {
         return chessName;
     }

@@ -2,53 +2,113 @@ package structures.players;
 
 import structures.ChessWithPos;
 import structures.Chessboard_NEW;
+import structures.Game;
 import structures.chesses.Chess;
 
 import java.util.ArrayList;
 
 public class ComputerPlayer extends Player{
+    static int[] blueDenPos = new int[]{9, 4};
+    static int[] redDenPos = new int[]{1, 4};
     public ComputerPlayer() {
         super(2);
     }
     @Override
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer) {
-
-    }
-    private double evaluateMap(Chessboard_NEW chessboard, int nowPlayer) {
-        double ret = 0;
-        int[] myDenPos = new int[]{5 + 4 * nowPlayer, 4};
-        int[] EnemyDenPos = new int[]{5 - 4 * nowPlayer, 4};
-
-        if (chessboard.getChess(myDenPos) != null) {
-            return -10000;
-        }
-        if (chessboard.getChess(EnemyDenPos) != null) {
-            return  10000;
-        }
-
-        ArrayList<ChessWithPos> myAtkChess = new ArrayList<>();
-        ArrayList<ChessWithPos> myEnemyChess = new ArrayList<>();
-        ArrayList<ChessWithPos> enemyAtkChess = new ArrayList<>();
-        ArrayList<ChessWithPos> enemyMyChess = new ArrayList<>();
-
-        for (int i = 0; i < Chessboard_NEW.getSizeX(); i++) {
-            for (int j = 0; j < Chessboard_NEW.getSizeY(); j++) {
+    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
+        double maxValue = - nowPlayer * 100000;
+        int[] maxPos = new int[2];
+        int[] maxNextPos = new int[2];
+        for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
+            for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
                 int[] pos = new int[]{i, j};
-                Chess chess = chessboard.getChess(pos);
-                if (chess != null) {
-                    if (chess.getTeam() * nowPlayer == 1) {
-                        putAtkChess(myAtkChess, chess, pos);
-                    } else {
-                        putAtkChess(enemyAtkChess, chess, pos);
+                Chess chessOnPos = chessboard.getChess(pos);
+                if (chessOnPos != null && chessOnPos.getTeam() == nowPlayer) {
+                    ArrayList<int[]> legalMoves = chessOnPos.getLegalMove(pos);
+                    for (int[] nextPos : legalMoves) {
+                        Chessboard_NEW chessboardNew = new Chessboard_NEW(chessboard);
+                        chessboardNew.moveChess(pos, nextPos);
+                        double value = evaluateMap(chessboardNew);
+                        if (value * nowPlayer > maxValue * nowPlayer) {
+                            maxValue = value;
+                            maxPos = pos;
+                            maxNextPos = nextPos;
+                        }
                     }
-                    
-                    ret += evaluateChess(chessboard, nowPlayer, chess, pos);
                 }
             }
         }
+        chessboard.moveChess(maxPos, maxNextPos);
+
+    }
+
+    /**
+     * 评估棋盘局面
+     * @param chessboard
+     * @return
+     */
+    public static double evaluateMap(Chessboard_NEW chessboard) {
+        double ret = 0;
+
+        int countBlueChess = 0;
+        int countRedChess = 0;
+
+
+        if (chessboard.getChess(blueDenPos) != null) {
+            return -10000;
+        }
+        if (chessboard.getChess(redDenPos) != null) {
+            return  10000;
+        }
+
+        ArrayList<ChessWithPos> blueAtkChess = new ArrayList<>();
+        ArrayList<ChessWithPos> blueEnemyChess = new ArrayList<>();
+        ArrayList<ChessWithPos> redAtkChess = new ArrayList<>();
+        ArrayList<ChessWithPos> redEnemyChess = new ArrayList<>();
+
+        for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
+            for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+                int[] pos = new int[]{i, j};
+                Chess chess = chessboard.getChess(pos);
+                if (chess != null) {
+                    if (chess.getTeam() == 1) {
+                        countBlueChess++;
+                        putAtkChess(blueAtkChess, chess, pos);
+                    } else {
+                        countRedChess++;
+                        putAtkChess(redAtkChess, chess, pos);
+                    }
+                    if (i < 5 && chess.getTeam() == 1) {
+                        redEnemyChess.add(new ChessWithPos(chess, pos));
+                    } else if (i > 5 && chess.getTeam() == -1) {
+                        blueEnemyChess.add(new ChessWithPos(chess, pos));
+                    }
+
+                    // 存在价值
+                    ret += chess.getTeam() * evaluateChess(chessboard, chess, pos);
+                }
+            }
+        }
+
+        // 进攻价值
+        ret += evaluateAtkChess(countBlueChess, blueAtkChess, 1);
+        ret += evaluateAtkChess(countRedChess, redAtkChess, -1);
+
+        // 防守价值
+
+        ret += evaluateDefChess(chessboard, blueEnemyChess, 1);
+        ret += evaluateDefChess(chessboard, redEnemyChess, -1);
+
+
         return ret;
     }
-    private void putAtkChess(ArrayList<ChessWithPos> atkChess, Chess chess, int[] pos) {
+
+    /**
+     * 有序放置进攻棋子
+     * @param atkChess
+     * @param chess
+     * @param pos
+     */
+    private static void putAtkChess(ArrayList<ChessWithPos> atkChess, Chess chess, int[] pos) {
         if (atkChess.size() < 2) {
             if (atkChess.size() == 0) {
                 atkChess.add(new ChessWithPos(chess, pos));
@@ -58,46 +118,191 @@ public class ComputerPlayer extends Player{
                 atkChess.add(atkChess.get(0));
                 atkChess.set(0, new ChessWithPos(chess, pos));
             }
-        } else if (atk(chess.getID()) > atk(atkChess.get(1).getChess().getID())) {
-            atkChess.set(1, atkChess.get(1));
+        } else if (atk(chess.getID()) > atk(atkChess.get(0).getChess().getID())) {
+            atkChess.set(1, atkChess.get(0));
             atkChess.set(0, new ChessWithPos(chess, pos));
+        } else if (atk(chess.getID()) > atk(atkChess.get(1).getChess().getID())) {
+            atkChess.set(1, new ChessWithPos(chess, pos));
         }
     }
-    private int atk(int id) {
+
+    /**
+     * 获得棋子进攻优先级
+     * @param id
+     * @return
+     */
+    private static int atk(int id) {
         int ret = id;
-        if (id == 8 || id == 1) {
-            ret = 0;
+        if (id == 8) {
+            ret = 1;
         }
         return ret;
     }
-    private double evaluateChess(Chessboard_NEW chessboard, int nowPlayer, Chess chess, int[] pos) {
+    private static int def(int id) {
+        int ret = 9 - id;
+        if (id == 1) {
+            ret = 1;
+        }
+        return ret;
+    }
+
+    /**
+     * 评估存在价值
+     * @param chessboard
+     * @param chess
+     * @param pos
+     * @return
+     */
+    private static double evaluateChess(Chessboard_NEW chessboard, Chess chess, int[] pos) {
         double ret;
         int initialValue = chess.getID();
         if (initialValue == 1) initialValue = 8;
         int distFromEnemy = getDistFromEnemy(chessboard, chess, pos);
-        ret = nowPlayer * chess.getTeam() * initialValue * (1 + Math.log(distFromEnemy));
+        if (distFromEnemy != 1) {
+            ret = (1 + initialValue) * (1 + Math.log(distFromEnemy));
+        } else {
+            ret = 0;
+        }
+//        System.out.printf("[%d] %s : %.2f\n", chess.getTeam(), chess.getChessName(), ret);
         return ret;
     }
-    private int getDistFromEnemy(Chessboard_NEW chessboard, Chess chess, int[] pos) {
+    private static double evaluateAtkChess(int countChess, ArrayList<ChessWithPos> atkChesses, int team) {
+        double ret = 0;
+        if (countChess <= 3) {
+            atkChesses.remove(1);
+        }
+        for (ChessWithPos atkChessWithPos : atkChesses) {
+            int[] atkPos = atkChessWithPos.getPos();
+            int[] denPos;
+            if (team == 1) {
+                denPos = redDenPos;
+            } else {
+                denPos = blueDenPos;
+            }
+            double value = team * Math.pow(getDist(atkPos, denPos), 0.9) * 3.2;
+            ret -= value;
+//            System.out.printf("(atk) [%d] %s : %.2f\n", team, atkChessWithPos.getChess().getChessName(), value);
+        }
+        if (countChess <= 3) {
+            ret *= 2;
+        }
+        return ret;
+    }
+
+    private static double evaluateDefChess(Chessboard_NEW chessboard, ArrayList<ChessWithPos> defChesses, int team) {
+        double value = 0;
+        for (ChessWithPos defChessWithPos : defChesses) {
+            Chess enemyChess = defChessWithPos.getChess();
+            int[] enemyPos = defChessWithPos.getPos();
+            int distFromEnemy = getDistFromEnemy(chessboard, enemyChess, enemyPos);
+            double defChessValue = Math.pow(distFromEnemy, 0.5) * 4;
+            ArrayList<int[]> defTrapPoses = new ArrayList<>();
+            if (enemyPos[1] == 4) {
+                defTrapPoses.add(new int[]{5 + team * 4, 3});
+                defTrapPoses.add(new int[]{5 + team * 4, 5});
+                defTrapPoses.add(new int[]{5 + team * 3, 4});
+            } else if (enemyPos[1] < 4) {
+                defTrapPoses.add(new int[]{5 + team * 4, 3});
+                defTrapPoses.add(new int[]{5 + team * 3, 4});
+            } else {
+                defTrapPoses.add(new int[]{5 + team * 4, 5});
+                defTrapPoses.add(new int[]{5 + team * 3, 4});
+            }
+            double defTrapValue = evaluateDefTrap(chessboard, defTrapPoses, team);
+            if (enemyPos[1] == 4) {
+                defTrapValue *= (double)2/3;
+            }
+            value += defChessValue + defTrapValue;
+//            System.out.printf("[%d] counter%s : %.2f", team, enemyChess.getChessName(), value);
+        }
+        double ret = Math.pow(value, 0.5);
+        return ret;
+    }
+    private static double evaluateDefTrap(Chessboard_NEW chessboard, ArrayList<int[]> trapPoses, int team) {
+        double ret = 0;
+        for (int[] trapPos : trapPoses) {
+            int dist = getDistFromDefAnimal(chessboard, trapPos, team);
+            ret -= Math.pow(dist, 1.2) * 1.5;
+        }
+        return ret;
+    }
+    private static int getDistFromDefAnimal(Chessboard_NEW chessboard, int[] trapPos, int team) {
+        int dist;
+        OUT:
+        for (dist = 1; dist < Chessboard_NEW.getSizeY() + Chessboard_NEW.getSizeX(); dist++) {
+            for (int i = -dist; i <= dist; i++) {
+                int j = dist - Math.abs(i);
+                int[] nextPos = new int[]{trapPos[0] + i, trapPos[1] + j};
+                if (!Chess.isOutOfBound(nextPos)) {
+                    Chess nextPosChess = chessboard.getChess(nextPos);
+                    if (nextPosChess != null && nextPosChess.getTeam() == team) {
+                        break OUT;
+                    }
+                }
+                j = -j;
+                nextPos = new int[]{trapPos[0] + i, trapPos[1] + j};
+                if (!Chess.isOutOfBound(nextPos)) {
+                    Chess nextPosChess = chessboard.getChess(nextPos);
+                    if (nextPosChess != null && nextPosChess.getTeam() == team) {
+                        break OUT;
+                    }
+                }
+            }
+        }
+        return dist;
+    }
+    /**
+     * 获得最近天敌距离
+     * @param chessboard
+     * @param chess
+     * @param pos
+     * @return
+     */
+    private static int getDistFromEnemy(Chessboard_NEW chessboard, Chess chess, int[] pos) {
         int dist;
         OUT:
         for (dist = 1; dist < Chessboard_NEW.getSizeY() + Chessboard_NEW.getSizeX(); dist++) {
             for (int i = -dist; i <= dist; i++) {
                 int j = dist - Math.abs(i);
                 int[] nextPos = new int[]{pos[0] + i, pos[1] + j};
-                Chess nextPosChess = chessboard.getChess(nextPos);
-                if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
-                    break OUT;
+                if (!Chess.isOutOfBound(nextPos)) {
+                    Chess nextPosChess = chessboard.getChess(nextPos);
+                    if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
+                        if (nextPosChess.ableToEat(chess.getCapacity())) {
+                            break OUT;
+                        }
+                    }
                 }
                 j = -j;
                 nextPos = new int[]{pos[0] + i, pos[1] + j};
-                nextPosChess = chessboard.getChess(nextPos);
-                if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
-                    break OUT;
+                if (!Chess.isOutOfBound(nextPos)) {
+                    Chess nextPosChess = chessboard.getChess(nextPos);
+                    if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
+                        if (nextPosChess.ableToEat(chess.getCapacity())) {
+                            break OUT;
+                        }
+                    }
                 }
             }
         }
         return dist;
+    }
+
+    public static int getDist(int[] posA, int[] posB) {
+        return Math.abs(posA[0] - posB[0]) + Math.abs(posA[1] - posB[1]);
+    }
+    private static double removeLittleNumber(double input, int rank) {
+        double littleNumber = Math.pow(10, rank);
+        return input - input % littleNumber;
+    }
+    public static void main(String[] args) {
+        Chessboard_NEW chessboard = new Chessboard_NEW();
+        chessboard.initBoard();
+        chessboard.moveChess(new int[]{1, 1}, new int[]{2, 1});
+        ComputerPlayer ai = new ComputerPlayer();
+        double value = removeLittleNumber(ai.evaluateMap(chessboard), -5);
+        System.out.println(value);
+
     }
 }
 /*
@@ -107,7 +312,7 @@ value值表：
 棋子位置 {
     存在价值:
     // 老鼠的 initialValue = 8, 其余与编号相等
-    +- initialValue * (1 + ln(最近天敌距离))
+    +- (1 + initialValue) * (1 + ln(最近天敌距离))
     若与天敌距离为1, 则为0
 
     进攻价值:
@@ -116,9 +321,9 @@ value值表：
 
     防守价值:
     // 敌方进攻型棋子: 跨过半场的敌方棋子
-    // 防守由两部分构成: 1.最近克制敌方的棋子的拦截 2.弱子守住陷阱
+    // 防守由两部分构成: 1.最近克制敌方的棋子的拦截 2.守住陷阱
     -+ 最近克制棋子与敌方棋子距离 ^ 0.5 * 4
-    -+ 最近两个陷阱与最近弱子距离 ^ 1.2 * 1.5
+    -+ 最近两个陷阱与最近子距离 ^ 1.2 * 1.5
 
 }
  */

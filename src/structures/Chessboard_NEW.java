@@ -24,6 +24,7 @@ public class Chessboard_NEW {
     private final static int sizeX = 9;
     private final static int sizeY = 7;
     private final static Terrain[][] terrains = new Terrain[sizeX+1][sizeY+1];
+    private static boolean isTerrainCreated = false;
     /**
      * 棋盘上的棋子储存在chessMap中
      */
@@ -32,7 +33,23 @@ public class Chessboard_NEW {
     /**
      * 构造函数，创建棋盘地形
      */
+
+    public Chessboard_NEW(Chessboard_NEW chessboardOld) {
+        if (!isTerrainCreated) {
+            createTerrains();
+        }
+        for (int i = 1; i <= sizeX; i++) {
+            for (int j = 1; j <= sizeY; j++) {
+                this.chessMap[i][j] = chessboardOld.chessMap[i][j];
+            }
+        }
+    }
     public Chessboard_NEW() {
+        if (!isTerrainCreated) {
+            createTerrains();
+        }
+    }
+    private void createTerrains() {
         //创建地形对象，陷阱和兽穴需要区分红蓝方
         Terrain denBlue = new Den(1);
         Terrain denRed = new Den(-1);
@@ -68,6 +85,7 @@ public class Chessboard_NEW {
                 }
             }
         }
+        isTerrainCreated = true;
     }
 
     /**
@@ -102,6 +120,12 @@ public class Chessboard_NEW {
     public void moveChess(int[] nowPos, int[] nextPos) {
         chessMap[nextPos[0]][nextPos[1]] = chessMap[nowPos[0]][nowPos[1]];
         chessMap[nowPos[0]][nowPos[1]] = null;
+        if (getTerrain(nextPos).getName().equals("Trap") && getTerrain(nextPos).getTeam() != getChess(nextPos).getTeam()) {
+            // 进入敌方陷阱改变Capacity
+            getChess(nextPos).setCapacity(0);
+        } else {
+            getChess(nextPos).setCapacity(getChess(nextPos).getID());
+        }
     }
 
     /**
@@ -111,6 +135,7 @@ public class Chessboard_NEW {
         for (int i = 1; i <= sizeY; i++) {
             for (int j = 1; j <= sizeX; j++) {
                 if (chessMap[j][i] != null) {
+                    char c = chessMap[j][i].getChessName().charAt(0);
                     System.out.printf(" %c ", chessMap[j][i].getChessName().charAt(0));
                 } else {
                     char c = terrains[j][i].getName().charAt(0);

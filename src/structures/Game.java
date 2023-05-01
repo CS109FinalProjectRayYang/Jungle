@@ -1,6 +1,7 @@
 package structures;
 
 import network.Client;
+import structures.players.ComputerPlayer;
 import structures.players.HumanPlayer;
 import structures.players.Player;
 
@@ -52,6 +53,9 @@ public class Game {
 
             // 打印棋盘
             chessboard.printBoard();
+
+            System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard));
+
             System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
             Client.setNowPlayer(nowPlayer);
             int identity = playerMap.get(nowPlayer).getIdentity();
@@ -66,7 +70,7 @@ public class Game {
                     }
                 }
             } else if (identity == 2) {
-
+                playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
             } else if (identity == 3) {
 
             }
