@@ -2,7 +2,9 @@ package network;
 
 import structures.Chessboard_NEW;
 import structures.Game;
+import structures.History;
 import structures.chesses.Chess;
+import structures.chesses.Elephant;
 import structures.players.CP_ForeSighted;
 import structures.players.CP_ShortSighted;
 import structures.players.ComputerPlayer;
@@ -14,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -72,6 +75,8 @@ public class Client {
         JButton pauseButton = new JButton("暂停");
         JButton regretButton = new JButton("悔棋");
         JButton resetButton = new JButton("重置");
+        JButton saveButton = new JButton("保存");
+        JButton loadButton = new JButton("加载");
         JButton backButton = new JButton("返回");
         //文本框
         //图片
@@ -302,17 +307,23 @@ public class Client {
             pauseButton.setFont(buttonFont);
             regretButton.setFont(buttonFont);
             resetButton.setFont(buttonFont);
+            saveButton.setFont(buttonFont);
+            loadButton.setFont(buttonFont);
             backButton.setFont(buttonFont);
 
             pauseButton.addActionListener(new pauseButtonListener());
             regretButton.addActionListener(new regretButtonListener());
             resetButton.addActionListener(new resetButtonListener());
+            saveButton.addActionListener(new saveButtonListener());
+            loadButton.addActionListener(new loadButtonListener());
             backButton.addActionListener(new backButtonListener());
 
             gameButtonPanel.setLayout(new BoxLayout(gameButtonPanel, BoxLayout.Y_AXIS));
             gameButtonPanel.add(pauseButton);
             gameButtonPanel.add(regretButton);
             gameButtonPanel.add(resetButton);
+            gameButtonPanel.add(saveButton);
+            gameButtonPanel.add(loadButton);
             gameButtonPanel.add(Box.createVerticalGlue());
             gameButtonPanel.add(backButton);
         }
@@ -386,14 +397,32 @@ public class Client {
         private class regretButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.buildFromHistory(game.getHistorySize() - 2);
+                game.buildFromHistory(2);
+                System.out.println("Regretted successfully!");
             }
         }
         private class resetButtonListener implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.buildFromHistory(0);
+                game.buildFromHistory(new History());
+                System.out.println("Resettled successfully!");
+            }
+        }
+        private class saveButtonListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long nowTime = System.currentTimeMillis();
+                String historyName=JOptionPane.showInputDialog("请输入记录名称","history"+nowTime);
+                saveHistory(historyName);
+            }
+        }
+        private class loadButtonListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadHistory();
             }
         }
         private class backButtonListener implements ActionListener {
@@ -407,6 +436,83 @@ public class Client {
                 }
             }
         }
+
+
+
+
+
+
+
+
+
+
+        private void saveHistory(String historyName) {
+            File fHistory = new File("data/save/%s.txt".formatted(historyName));
+            if (fHistory.exists()) {
+                JOptionPane.showMessageDialog(mainFrame, "文件名重复");
+            } else {
+                try {
+                    BufferedWriter fHistoryWriter = new BufferedWriter(new FileWriter(fHistory));
+                    fHistoryWriter.write("%d".formatted(game.getHistorySize()));
+                    fHistoryWriter.newLine();
+                    for (int i = 1; i <= game.getHistorySize(); i++) {
+                        int[][] nowStep = game.getHistory(i);
+                        fHistoryWriter.write("%d %d %d %d".formatted(nowStep[0][0], nowStep[0][1], nowStep[1][0], nowStep[1][1]));
+                        fHistoryWriter.newLine();
+                    }
+                    fHistoryWriter.flush();
+                    fHistoryWriter.close();
+                    JOptionPane.showMessageDialog(mainFrame, "保存成功");
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(mainFrame, "历史文件操作错误");
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }
+
+        private void loadHistory() {
+            JFileChooser historyChooser = new JFileChooser("data/save/");
+            historyChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int flag = historyChooser.showOpenDialog(mainFrame);
+            if (flag == JFileChooser.APPROVE_OPTION) {
+                File fHistory = historyChooser.getSelectedFile();
+                try {
+                    BufferedReader fHistoryReader = new BufferedReader(new FileReader(fHistory));
+                    int size = Integer.parseInt(fHistoryReader.readLine());
+                    int[][][] history = new int[3000][2][2];
+                    for (int i = 1; i <= size; i++) {
+                        String line = fHistoryReader.readLine();
+                        String[] elements = line.split(" ");
+                        history[i][0][0] = Integer.parseInt(elements[0]);
+                        history[i][0][1] = Integer.parseInt(elements[1]);
+                        history[i][1][0] = Integer.parseInt(elements[2]);
+                        history[i][1][1] = Integer.parseInt(elements[3]);
+                    }
+                    History h = new History(history, size);
+                    game.buildFromHistory(h);
+                } catch (FileNotFoundException e) {
+                    System.out.println("历史文件读取错误");
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         static class GameStart extends Thread {
             @Override
             public void run() {

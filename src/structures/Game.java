@@ -17,8 +17,7 @@ public class Game {
     boolean inputted = true;
     int nowPlayer = 1;
     String receiveCommand;
-    int[][][] history = new int[1000][2][2];
-    int historySize = 0;
+    History history = new History();
     HashMap<Integer, String> nameMap = new HashMap<>();
     HashMap<Integer, Player> playerMap = new HashMap<>();
     public Game() {
@@ -30,6 +29,9 @@ public class Game {
     public void setPlayer(Player playerBlue, Player playerRed) {
         this.playerBlue = playerBlue;
         this.playerRed = playerRed;
+    }
+    public void setHistory(History history) {
+        this.history = history;
     }
     public void withOutClient() {
         withClient = false;
@@ -49,7 +51,7 @@ public class Game {
 
         // 新建并初始化棋盘
         chessboard = new Chessboard_NEW();
-        chessboard.initBoard();
+        buildFromHistory(history);
 
         // 游戏开始
         nowPlayer = 1;
@@ -62,7 +64,7 @@ public class Game {
             // 打印棋盘
             if (withClient) {
                 chessboard.printBoard();
-                System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
+//                System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
                 System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
             }
 
@@ -122,29 +124,52 @@ public class Game {
         receiveCommand = command;
     }
     private void addHistory(int[] pos, int[] nextPos) {
-        history[++historySize] = new int[][]{pos, nextPos};
+        history.addHistory(pos, nextPos);
     }
-    public void buildFromHistory(int size) {
-        setHistorySize(size);
-        buildFromHistory();
+    public History getHistory() {
+        return history;
+    }
+    public int[][] getHistory(int step) {
+        return history.getHistory(step);
     }
     public void buildFromHistory() {
+        buildFromHistory(history);
+    }
+    public void buildFromHistory(int delSize) {
+        history.delHistory(delSize);
+        buildFromHistory(history);
+    }
+    public void buildFromHistory(History history) {
+        this.history = history;
         chessboard.initBoard();
-        for (int i = 1; i <= historySize; i++) {
-            chessboard.moveChess(history[i][0], history[i][1]);
+        for (int i = 1; i <= history.getSize(); i++) {
+            int[][] nowStep = history.getHistory(i);
+            chessboard.moveChess(nowStep[0], nowStep[1]);
         }
         chessboard.printBoard();
+        updateNowPlayer();
+        System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
     }
 
     public void setHistorySize(int historySize) {
-        this.historySize = Math.max(historySize, 0);
+        history.setSize(historySize);
+        buildFromHistory();
     }
 
     public int getHistorySize() {
-        return historySize;
+        return history.getSize();
     }
 
     public Chessboard_NEW getChessboard() {
         return chessboard;
+    }
+    private void updateNowPlayer() {
+        int flag = getHistorySize() % 2;
+        if (flag == 0) {
+            nowPlayer = 1;
+        } else {
+            nowPlayer = -1;
+        }
+        Client.setNowPlayer(nowPlayer);
     }
 }
