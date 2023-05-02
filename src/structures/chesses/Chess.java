@@ -1,6 +1,7 @@
 package structures.chesses;
 
 import structures.Chessboard_NEW;
+import structures.terrains.Terrain;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -54,12 +55,13 @@ public class Chess {
     public int getTeam() {
         return team;
     }
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public int getCapacity(int[] pos) {
+        int ret = capacity;
+        Terrain terrain = Chessboard_NEW.getTerrain(pos);
+        if (terrain.getId() == 20 && team * terrain.getTeam() == -1) {
+            ret = 0;
+        }
+        return ret;
     }
 
     public boolean ableToEat(int capacity) {
@@ -131,7 +133,7 @@ public class Chess {
             Chess chess = chessboard.getChess(nextPos);
 
             // 只有该棋子是对手的且比自己弱，才合法
-            ret = chess.getTeam() != this.getTeam() && foodChain[chess.getCapacity()];
+            ret = chess.getTeam() != this.getTeam() && foodChain[chess.getCapacity(nextPos)];
         }
         return ret;
     }
@@ -148,7 +150,7 @@ public class Chess {
             ret = false;
         } else if (chessboard.getChess(nextPos) != null) {
             Chess chess = chessboard.getChess(nextPos);
-            ret = foodChain[chess.getCapacity()];
+            ret = foodChain[chess.getCapacity(nextPos)];
         }
         return ret;
     }

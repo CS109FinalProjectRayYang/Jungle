@@ -8,6 +8,8 @@ import structures.players.Player;
 import java.util.HashMap;
 
 public class Game {
+    boolean withClient = true;
+    int step = 0;
     Player playerBlue;
     Player playerRed;
     int gameCondition;
@@ -26,6 +28,9 @@ public class Game {
     public void setPlayer(Player playerBlue, Player playerRed) {
         this.playerBlue = playerBlue;
         this.playerRed = playerRed;
+    }
+    public void withOutClient() {
+        withClient = false;
     }
     public Player getPlayerBlue() {
         return playerBlue;
@@ -46,18 +51,22 @@ public class Game {
 
         // 游戏开始
         nowPlayer = 1;
-        System.out.println("Game Started!");
-
+        if (withClient) {
+            System.out.println("Game Started!");
+        }
         // 在未分出胜负之前循环执行
-        while ((gameCondition = chessboard.isEnd()) == 0) {
-
+        while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
+            step++;
             // 打印棋盘
-            chessboard.printBoard();
+            if (withClient) {
+                chessboard.printBoard();
+                System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
+                System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
+            }
 
-            System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard));
-
-            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
-            Client.setNowPlayer(nowPlayer);
+            if (withClient) {
+                Client.setNowPlayer(nowPlayer);
+            }
             int identity = playerMap.get(nowPlayer).getIdentity();
 
             if (identity == 1) {
@@ -75,19 +84,31 @@ public class Game {
 
             }
 
-            // 打印输入状态，转换攻方
-            System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
+            if (withClient) {
+                // 打印输入状态，转换攻方
+                System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
+            }
             nowPlayer = -nowPlayer;
         }
 
 
         // 如果游戏结束
+        chessboard.printBoard();
         nowPlayer = 0;
-        Client.setNowPlayer(nowPlayer);
-        Client.winPaint(gameCondition);
-        System.out.printf("%s Wins!", nameMap.get(gameCondition));
+        if (withClient) {
+            Client.setNowPlayer(nowPlayer);
+            Client.winPaint(gameCondition);
+        }
+        if (gameCondition != 0) {
+            System.out.printf("%s Wins!\n", nameMap.get(gameCondition));
+        } else {
+            System.out.println("Game Draw!");
+        }
     }
 
+    public int getGameCondition() {
+        return gameCondition;
+    }
     public boolean getInputted() {
         return inputted;
     }

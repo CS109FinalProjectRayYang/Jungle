@@ -13,40 +13,21 @@ public class ComputerPlayer extends Player{
     public ComputerPlayer() {
         super(2);
     }
-    @Override
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
-        double maxValue = - nowPlayer * 100000;
-        int[] maxPos = new int[2];
-        int[] maxNextPos = new int[2];
-        for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
-            for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
-                int[] pos = new int[]{i, j};
-                Chess chessOnPos = chessboard.getChess(pos);
-                if (chessOnPos != null && chessOnPos.getTeam() == nowPlayer) {
-                    ArrayList<int[]> legalMoves = chessOnPos.getLegalMove(pos);
-                    for (int[] nextPos : legalMoves) {
-                        Chessboard_NEW chessboardNew = new Chessboard_NEW(chessboard);
-                        chessboardNew.moveChess(pos, nextPos);
-                        double value = evaluateMap(chessboardNew);
-                        if (value * nowPlayer > maxValue * nowPlayer) {
-                            maxValue = value;
-                            maxPos = pos;
-                            maxNextPos = nextPos;
-                        }
-                    }
-                }
-            }
-        }
-        chessboard.moveChess(maxPos, maxNextPos);
-
-    }
-
     /**
      * 评估棋盘局面
      * @param chessboard
      * @return
      */
-    public static double evaluateMap(Chessboard_NEW chessboard) {
+    private static double pow(double x, double n) {
+        if (x > 0) {
+            return Math.pow(x, n);
+        } else if (x < 0) {
+            return -Math.pow(-x, n);
+        } else {
+            return 0;
+        }
+    }
+    public static double evaluateMap(Chessboard_NEW chessboard, int countLoop) {
         double ret = 0;
 
         int countBlueChess = 0;
@@ -70,6 +51,7 @@ public class ComputerPlayer extends Player{
                 int[] pos = new int[]{i, j};
                 Chess chess = chessboard.getChess(pos);
                 if (chess != null) {
+                    // 获得进攻棋子
                     if (chess.getTeam() == 1) {
                         countBlueChess++;
                         putAtkChess(blueAtkChess, chess, pos);
@@ -77,10 +59,15 @@ public class ComputerPlayer extends Player{
                         countRedChess++;
                         putAtkChess(redAtkChess, chess, pos);
                     }
+                    // 获得防守棋子
                     if (i < 5 && chess.getTeam() == 1) {
                         redEnemyChess.add(new ChessWithPos(chess, pos));
                     } else if (i > 5 && chess.getTeam() == -1) {
                         blueEnemyChess.add(new ChessWithPos(chess, pos));
+                    }
+                    // 老鼠河流价值
+                    if (chess.getID() == 1 && Chessboard_NEW.getTerrain(pos).getId() == 10) {
+                        ret += 3 * chess.getTeam();
                     }
 
                     // 存在价值
@@ -90,14 +77,13 @@ public class ComputerPlayer extends Player{
         }
 
         // 进攻价值
-        ret += evaluateAtkChess(countBlueChess, blueAtkChess, 1);
-        ret += evaluateAtkChess(countRedChess, redAtkChess, -1);
+        ret += evaluateAtkChess(countBlueChess, blueAtkChess, 1, countLoop);
+        ret += evaluateAtkChess(countRedChess, redAtkChess, -1, countLoop);
 
         // 防守价值
 
-        ret += evaluateDefChess(chessboard, blueEnemyChess, 1);
+        ret -= evaluateDefChess(chessboard, blueEnemyChess, 1);
         ret += evaluateDefChess(chessboard, redEnemyChess, -1);
-
 
         return ret;
     }
@@ -159,16 +145,16 @@ public class ComputerPlayer extends Player{
         if (initialValue == 1) initialValue = 8;
         int distFromEnemy = getDistFromEnemy(chessboard, chess, pos);
         if (distFromEnemy != 1) {
-            ret = (1 + initialValue) * (1 + Math.log(distFromEnemy));
+            ret = (2 + initialValue) * (1 + Math.log(distFromEnemy));
         } else {
             ret = 0;
         }
 //        System.out.printf("[%d] %s : %.2f\n", chess.getTeam(), chess.getChessName(), ret);
         return ret;
     }
-    private static double evaluateAtkChess(int countChess, ArrayList<ChessWithPos> atkChesses, int team) {
+    private static double evaluateAtkChess(int countChess, ArrayList<ChessWithPos> atkChesses, int team, int countLoop) {
         double ret = 0;
-        if (countChess <= 3) {
+        if (countChess <= 3 && atkChesses.size() == 2) {
             atkChesses.remove(1);
         }
         for (ChessWithPos atkChessWithPos : atkChesses) {
@@ -179,7 +165,10 @@ public class ComputerPlayer extends Player{
             } else {
                 denPos = blueDenPos;
             }
-            double value = team * Math.pow(getDist(atkPos, denPos), 0.9) * 3.2;
+            double value = team * (-30 + pow(getDist(atkPos, denPos), 0.7) * 4);
+            if (countLoop > 100) {
+                value *= 3;
+            }
             ret -= value;
 //            System.out.printf("(atk) [%d] %s : %.2f\n", team, atkChessWithPos.getChess().getChessName(), value);
         }
@@ -195,7 +184,7 @@ public class ComputerPlayer extends Player{
             Chess enemyChess = defChessWithPos.getChess();
             int[] enemyPos = defChessWithPos.getPos();
             int distFromEnemy = getDistFromEnemy(chessboard, enemyChess, enemyPos);
-            double defChessValue = Math.pow(distFromEnemy, 0.5) * 4;
+            double defChessValue = pow(distFromEnemy, 0.5) * 4;
             ArrayList<int[]> defTrapPoses = new ArrayList<>();
             if (enemyPos[1] == 4) {
                 defTrapPoses.add(new int[]{5 + team * 4, 3});
@@ -215,14 +204,17 @@ public class ComputerPlayer extends Player{
             value += defChessValue + defTrapValue;
 //            System.out.printf("[%d] counter%s : %.2f", team, enemyChess.getChessName(), value);
         }
-        double ret = Math.pow(value, 0.5);
+        double ret = 0;
+        if (value != 0) {
+            ret = pow(value, 0.5);
+        }
         return ret;
     }
     private static double evaluateDefTrap(Chessboard_NEW chessboard, ArrayList<int[]> trapPoses, int team) {
         double ret = 0;
         for (int[] trapPos : trapPoses) {
             int dist = getDistFromDefAnimal(chessboard, trapPos, team);
-            ret -= Math.pow(dist, 1.2) * 1.5;
+            ret -= pow(dist, 1.2) * 1.5;
         }
         return ret;
     }
@@ -265,34 +257,32 @@ public class ComputerPlayer extends Player{
             for (int i = -dist; i <= dist; i++) {
                 int j = dist - Math.abs(i);
                 int[] nextPos = new int[]{pos[0] + i, pos[1] + j};
-                if (!Chess.isOutOfBound(nextPos)) {
-                    Chess nextPosChess = chessboard.getChess(nextPos);
-                    if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
-                        if (nextPosChess.ableToEat(chess.getCapacity())) {
-                            break OUT;
-                        }
-                    }
-                }
+                if (whetherEnemy(chessboard, chess, nextPos)) break OUT;
                 j = -j;
                 nextPos = new int[]{pos[0] + i, pos[1] + j};
-                if (!Chess.isOutOfBound(nextPos)) {
-                    Chess nextPosChess = chessboard.getChess(nextPos);
-                    if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
-                        if (nextPosChess.ableToEat(chess.getCapacity())) {
-                            break OUT;
-                        }
-                    }
-                }
+                if (whetherEnemy(chessboard, chess, nextPos)) break OUT;
             }
         }
         return dist;
+    }
+
+    private static boolean whetherEnemy(Chessboard_NEW chessboard, Chess chess, int[] nextPos) {
+        if (!Chess.isOutOfBound(nextPos)) {
+            Chess nextPosChess = chessboard.getChess(nextPos);
+            if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
+                if (nextPosChess.ableToEat(chess.getCapacity(nextPos))) {
+                    return nextPosChess.getID() != 1 || Chessboard_NEW.getTerrain(nextPos).getId() != 10;
+                }
+            }
+        }
+        return false;
     }
 
     public static int getDist(int[] posA, int[] posB) {
         return Math.abs(posA[0] - posB[0]) + Math.abs(posA[1] - posB[1]);
     }
     private static double removeLittleNumber(double input, int rank) {
-        double littleNumber = Math.pow(10, rank);
+        double littleNumber = pow(10, rank);
         return input - input % littleNumber;
     }
     public static void main(String[] args) {
@@ -300,7 +290,7 @@ public class ComputerPlayer extends Player{
         chessboard.initBoard();
         chessboard.moveChess(new int[]{1, 1}, new int[]{2, 1});
         ComputerPlayer ai = new ComputerPlayer();
-        double value = removeLittleNumber(ai.evaluateMap(chessboard), -5);
+        double value = removeLittleNumber(ai.evaluateMap(chessboard, 0), -5);
         System.out.println(value);
 
     }
@@ -312,7 +302,7 @@ value值表：
 棋子位置 {
     存在价值:
     // 老鼠的 initialValue = 8, 其余与编号相等
-    +- (1 + initialValue) * (1 + ln(最近天敌距离))
+    +- (2 + initialValue) * (1 + ln(最近天敌距离))
     若与天敌距离为1, 则为0
 
     进攻价值:

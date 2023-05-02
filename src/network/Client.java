@@ -3,6 +3,8 @@ package network;
 import structures.Chessboard_NEW;
 import structures.Game;
 import structures.chesses.Chess;
+import structures.players.CP_ForeSighted;
+import structures.players.CP_ShortSighted;
 import structures.players.ComputerPlayer;
 import structures.players.HumanPlayer;
 
@@ -358,7 +360,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 game = new Game();
-                game.setPlayer(new HumanPlayer(), new ComputerPlayer());
+                game.setPlayer(new HumanPlayer(), new CP_ForeSighted());
                 gamePaint();
             }
         }

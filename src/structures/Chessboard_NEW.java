@@ -120,12 +120,6 @@ public class Chessboard_NEW {
     public void moveChess(int[] nowPos, int[] nextPos) {
         chessMap[nextPos[0]][nextPos[1]] = chessMap[nowPos[0]][nowPos[1]];
         chessMap[nowPos[0]][nowPos[1]] = null;
-        if (getTerrain(nextPos).getName().equals("Trap") && getTerrain(nextPos).getTeam() != getChess(nextPos).getTeam()) {
-            // 进入敌方陷阱改变Capacity
-            getChess(nextPos).setCapacity(0);
-        } else {
-            getChess(nextPos).setCapacity(getChess(nextPos).getID());
-        }
     }
 
     /**
