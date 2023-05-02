@@ -17,6 +17,8 @@ public class Game {
     boolean inputted = true;
     int nowPlayer = 1;
     String receiveCommand;
+    int[][][] history = new int[1000][2][2];
+    int historySize = 0;
     HashMap<Integer, String> nameMap = new HashMap<>();
     HashMap<Integer, Player> playerMap = new HashMap<>();
     public Game() {
@@ -113,10 +115,35 @@ public class Game {
         return inputted;
     }
 
-    public void input(String command) {
+    public void input(int[] pos, int[] nextPos, String command) {
+        chessboard.moveChess(pos, nextPos);
+        addHistory(pos, nextPos);
         inputted = true;
         receiveCommand = command;
     }
+    private void addHistory(int[] pos, int[] nextPos) {
+        history[++historySize] = new int[][]{pos, nextPos};
+    }
+    public void buildFromHistory(int size) {
+        setHistorySize(size);
+        buildFromHistory();
+    }
+    public void buildFromHistory() {
+        chessboard.initBoard();
+        for (int i = 1; i <= historySize; i++) {
+            chessboard.moveChess(history[i][0], history[i][1]);
+        }
+        chessboard.printBoard();
+    }
+
+    public void setHistorySize(int historySize) {
+        this.historySize = Math.max(historySize, 0);
+    }
+
+    public int getHistorySize() {
+        return historySize;
+    }
+
     public Chessboard_NEW getChessboard() {
         return chessboard;
     }

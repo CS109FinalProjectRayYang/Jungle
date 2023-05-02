@@ -70,6 +70,8 @@ public class Client {
         JButton againstComputerButton = new JButton("玩家VS电脑");
         JButton backInitButton = new JButton("返回主界面");
         JButton pauseButton = new JButton("暂停");
+        JButton regretButton = new JButton("悔棋");
+        JButton resetButton = new JButton("重置");
         JButton backButton = new JButton("返回");
         //文本框
         //图片
@@ -239,8 +241,7 @@ public class Client {
                     }
                 }
                 if (isLegalMove) {
-                    game.getChessboard().moveChess(clickedPos, clickPos);
-                    game.input("Finished.");
+                    game.input(clickedPos, clickPos, "Finished.");
                 } else {
                     System.out.println("Illegal Click");
                 }
@@ -299,13 +300,19 @@ public class Client {
 
         private void loadGameButtonPanel() {
             pauseButton.setFont(buttonFont);
+            regretButton.setFont(buttonFont);
+            resetButton.setFont(buttonFont);
             backButton.setFont(buttonFont);
 
             pauseButton.addActionListener(new pauseButtonListener());
+            regretButton.addActionListener(new regretButtonListener());
+            resetButton.addActionListener(new resetButtonListener());
             backButton.addActionListener(new backButtonListener());
 
             gameButtonPanel.setLayout(new BoxLayout(gameButtonPanel, BoxLayout.Y_AXIS));
             gameButtonPanel.add(pauseButton);
+            gameButtonPanel.add(regretButton);
+            gameButtonPanel.add(resetButton);
             gameButtonPanel.add(Box.createVerticalGlue());
             gameButtonPanel.add(backButton);
         }
@@ -374,6 +381,19 @@ public class Client {
         private class pauseButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
+            }
+        }
+        private class regretButtonListener implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.buildFromHistory(game.getHistorySize() - 2);
+            }
+        }
+        private class resetButtonListener implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.buildFromHistory(0);
             }
         }
         private class backButtonListener implements ActionListener {

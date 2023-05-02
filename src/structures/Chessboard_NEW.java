@@ -92,6 +92,7 @@ public class Chessboard_NEW {
      * 初始化棋盘，把棋子放到对应位置上
      */
     public void initBoard() {
+        chessMap = new Chess[sizeX+1][sizeY+1];
 
         chessMap[1][7] = new Lion(-1, this);
         chessMap[3][7] = new Rat(-1, this);

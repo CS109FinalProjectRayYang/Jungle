@@ -13,11 +13,7 @@ public class ComputerPlayer extends Player{
     public ComputerPlayer() {
         super(2);
     }
-    /**
-     * 评估棋盘局面
-     * @param chessboard
-     * @return
-     */
+
     private static double pow(double x, double n) {
         if (x > 0) {
             return Math.pow(x, n);
@@ -27,6 +23,11 @@ public class ComputerPlayer extends Player{
             return 0;
         }
     }
+    /**
+     * 评估棋盘局面
+     * @param chessboard
+     * @return
+     */
     public static double evaluateMap(Chessboard_NEW chessboard, int countLoop) {
         double ret = 0;
 

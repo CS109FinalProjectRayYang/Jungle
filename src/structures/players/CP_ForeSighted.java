@@ -49,6 +49,7 @@ public class CP_ForeSighted extends ComputerPlayer {
         }
         lastChessPos = maxNextPos;
         chessboard.moveChess(maxPos, maxNextPos);
+        game.input(maxPos, maxNextPos, "Finished with %d times of calculate.".formatted(countLoop));
     }
     private double search(Chessboard_NEW chessboard, int nowPlayer, double alpha, double beta, int countTurn) {
         overCount++;
