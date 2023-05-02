@@ -42,6 +42,16 @@ public class Game {
     public Player getPlayerRed() {
         return playerRed;
     }
+    public int getNowPlayer() {
+        return nowPlayer;
+    }
+    public Player getPlayer() {
+        if (nowPlayer == 1) {
+            return playerBlue;
+        } else {
+            return playerRed;
+        }
+    }
     public void start() {
         nameMap.put(1, "playerBlue");
         nameMap.put(-1, "playerRed");
@@ -92,6 +102,7 @@ public class Game {
                 // 打印输入状态，转换攻方
                 System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
             }
+
             nowPlayer = -nowPlayer;
         }
 

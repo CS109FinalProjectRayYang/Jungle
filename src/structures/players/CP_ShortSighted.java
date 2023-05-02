@@ -42,7 +42,7 @@ public class CP_ShortSighted extends ComputerPlayer{
             countDeadLoop = 0;
         }
         lastChessPos = maxNextPos;
-        chessboard.moveChess(maxPos, maxNextPos);
+        game.input(maxPos, maxNextPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(maxPos).getChessName(), maxPos[0], maxPos[1], maxNextPos[0], maxNextPos[1]));
 
     }
 }

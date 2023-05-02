@@ -90,7 +90,8 @@ public class Client {
         JLabel mapImgLabel = new JLabel(mapImg);
         //字体
         Font buttonFont = new Font("楷体", Font.BOLD, 20);
-
+        //进程
+        GameStart gameStart = new GameStart();
 
 
 
@@ -170,7 +171,7 @@ public class Client {
             mainFrame.setLocation(200, 100);
             mainFrame.pack();
 
-            GameStart gameStart = new GameStart();
+            gameStart = new GameStart();
             gameStart.start();
         }
 
@@ -246,7 +247,7 @@ public class Client {
                     }
                 }
                 if (isLegalMove) {
-                    game.input(clickedPos, clickPos, "Finished.");
+                    game.input(clickedPos, clickPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(clickedPos).getChessName(), clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
                 } else {
                     System.out.println("Illegal Click");
                 }
@@ -378,7 +379,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 game = new Game();
-                game.setPlayer(new HumanPlayer(), new CP_ForeSighted());
+                game.setPlayer(new CP_ForeSighted(), new HumanPlayer());
                 gamePaint();
             }
         }
@@ -397,16 +398,30 @@ public class Client {
         private class regretButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.buildFromHistory(2);
-                System.out.println("Regretted successfully!");
+                if (game.getPlayer().getIdentity() == 1 && game.getHistorySize() > 1) {
+                    game.buildFromHistory(2);
+                    System.out.println("Regretted successfully!");
+                    JOptionPane.showMessageDialog(mainFrame, "悔棋成功");
+                } else {
+                    if (game.getPlayer().getIdentity() != 1) {
+                        JOptionPane.showMessageDialog(mainFrame, "悔棋失败：不是你的回合");
+                    } else {
+                        JOptionPane.showMessageDialog(mainFrame, "悔棋失败：无可悔棋步骤");
+                    }
+                }
             }
         }
         private class resetButtonListener implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.buildFromHistory(new History());
+                gameStart.interrupt();
+                Game newGame = new Game(game.getPlayerBlue(), game.getPlayerRed());
+                game = newGame;
+                gameStart = new GameStart();
+                gameStart.start();
                 System.out.println("Resettled successfully!");
+                JOptionPane.showMessageDialog(mainFrame, "重置成功");
             }
         }
         private class saveButtonListener implements ActionListener {
@@ -516,6 +531,11 @@ public class Client {
         static class GameStart extends Thread {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 game.start();
             }
         }

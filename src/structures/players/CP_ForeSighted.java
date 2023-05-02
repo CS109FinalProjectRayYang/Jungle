@@ -48,8 +48,7 @@ public class CP_ForeSighted extends ComputerPlayer {
             countDeadLoop = 0;
         }
         lastChessPos = maxNextPos;
-        chessboard.moveChess(maxPos, maxNextPos);
-        game.input(maxPos, maxNextPos, "Finished with %d times of calculate.".formatted(countLoop));
+        game.input(maxPos, maxNextPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(maxPos).getChessName(), maxPos[0], maxPos[1], maxNextPos[0], maxNextPos[1]));
     }
     private double search(Chessboard_NEW chessboard, int nowPlayer, double alpha, double beta, int countTurn) {
         overCount++;
@@ -104,3 +103,4 @@ public class CP_ForeSighted extends ComputerPlayer {
         }
     }
 }
+// TODO: 进攻棋子缺少追击敌方棋子的动力，在棋局陷入僵局后，AI棋手可能会陷入防守棋子的无意义移动黑洞中
