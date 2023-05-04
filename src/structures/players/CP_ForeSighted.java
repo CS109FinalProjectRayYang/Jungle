@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+// Max-min 对抗搜索
+// alpha-beta 剪枝
+
 public class CP_ForeSighted extends ComputerPlayer {
     Random ran = new Random();
     private int overCount;

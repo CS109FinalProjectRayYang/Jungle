@@ -44,5 +44,5 @@ public class CP_ShortSighted extends ComputerPlayer{
         lastChessPos = maxNextPos;
         game.input(maxPos, maxNextPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(maxPos).getChessName(), maxPos[0], maxPos[1], maxNextPos[0], maxNextPos[1]));
 
-    }
+    }//哪个位置上的棋子  移到哪个位置上
 }
