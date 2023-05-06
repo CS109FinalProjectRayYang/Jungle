@@ -296,6 +296,7 @@ public class ComputerPlayer extends Player{
 
     }
 }
+// TODO: value值表存在缺陷，棋子不能阻挡进攻
 /*
 value值表：
 棋子存在 : chessIndex (Rat : 8)

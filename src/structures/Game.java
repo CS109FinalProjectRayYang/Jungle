@@ -83,6 +83,7 @@ public class Game {
 
             Client.setNowPlayer(nowPlayer);
             Client.setPlayer(playerMap.get(nowPlayer));
+            Client.updateGamePaint();
 
             int identity = playerMap.get(nowPlayer).getIdentity();
 

@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
 
 public class Client {
     static GUI myGUI;
-    static int nowPlayer;
+    static int nowPlayer = 1;
     static Player player;
     static int colorMode = 1;
     // gameMode = 1 : 先手
@@ -219,21 +219,24 @@ public class Client {
             gameStart.start();
         }
         private void updateGamePaint() {
-            mainFramePanel.removeAll();
+//            mainFramePanel.removeAll();
+//
+//            updateMessageBox();
+//
+//            drawAnimals();
+//
+//            if (clicked) {
+//                drawChoose();
+//            }
+//
+//            mainFramePanel.add(mapImgLabel);
+//            mainFramePanel.add(gameButtonPanel);
+//            mainFramePanel.add(messagePanel);
+//
+//            mainFrame.repaint();
 
-            updateMessageBox();
-
-            drawAnimals();
-
-            if (clicked) {
-                drawChoose();
-            }
-
-            mainFramePanel.add(mapImgLabel);
-            mainFramePanel.add(gameButtonPanel);
-            mainFramePanel.add(messagePanel);
-
-            mainFrame.repaint();
+            Repaint painter = new Repaint();
+            painter.start();
 
         }
 
@@ -244,15 +247,19 @@ public class Client {
                 for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
                     Chess chess = chessboard.getChess(j, i);
                     if (chess != null) {
-                        int posX = 65 + 80 * j;
+                        int posX = 50 + 80 * j;
                         int posY = 45 + 80 * i;
+                        ImageIcon chessImg;
+                        if (nowPlayer == chess.getTeam()) {
+                            chessImg = chess.getImg();
+                        } else {
+                            chessImg = chess.getGreyImg();
+                        }
 
-                        ImageIcon chessImg = chess.getImg();
-
-                        chessImg.setImage(chessImg.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
+                        chessImg.setImage(chessImg.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
 
                         JLabel imgLabel = new JLabel(chessImg);
-                        imgLabel.setBounds(posX, posY, 80, 80);
+                        imgLabel.setBounds(posX, posY, 116, 80);
 
                         mainFramePanel.add(imgLabel);
                     }
@@ -792,11 +799,30 @@ public class Client {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 game.start();
+            }
+        }
+        class Repaint extends Thread {
+            public void run() {
+                mainFramePanel.removeAll();
+
+                updateMessageBox();
+
+                drawAnimals();
+
+                if (clicked) {
+                    drawChoose();
+                }
+
+                mainFramePanel.add(mapImgLabel);
+                mainFramePanel.add(gameButtonPanel);
+                mainFramePanel.add(messagePanel);
+
+                mainFrame.repaint();
             }
         }
 
