@@ -225,6 +225,10 @@ public class Client {
 
             drawAnimals();
 
+            if (clicked) {
+                drawChoose();
+            }
+
             mainFramePanel.add(mapImgLabel);
             mainFramePanel.add(gameButtonPanel);
             mainFramePanel.add(messagePanel);
@@ -242,9 +246,11 @@ public class Client {
                     if (chess != null) {
                         int posX = 65 + 80 * j;
                         int posY = 45 + 80 * i;
-                        ImageIcon chessImgOrig = chess.getImg();
-                        ImageIcon chessImg = new ImageIcon();
-                        chessImg.setImage(chessImgOrig.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
+
+                        ImageIcon chessImg = chess.getImg();
+
+                        chessImg.setImage(chessImg.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
+
                         JLabel imgLabel = new JLabel(chessImg);
                         imgLabel.setBounds(posX, posY, 80, 80);
 
@@ -252,6 +258,30 @@ public class Client {
                     }
                 }
             }
+            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
+        }
+
+        private void drawChoose() {
+            String path;
+            mainFramePanel.setLayout(null);
+            Chess chess = game.getChessboard().getChess(clickedPos);
+            ImageIcon imgIconTemp;
+            for (int[] temp : chess.getLegalMove(clickedPos)) {
+                if (chess.getTeam() == 1) {
+                    path = "data/img/ChosenBlue.png";
+                } else {
+                    path = "data/img/ChosenRed.png";
+                }
+
+                imgIconTemp = new ImageIcon(path);
+                imgIconTemp.setImage(imgIconTemp.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
+
+                JLabel chosenImgLabel = new JLabel(imgIconTemp);
+                chosenImgLabel.setBounds(63 + 80 * temp[0], 41 + 80 * temp[1], 80, 80);
+
+                mainFramePanel.add(chosenImgLabel);
+            }
+
             mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
 
@@ -392,6 +422,7 @@ public class Client {
                 // 复位
                 clicked = false;
             }
+            updateGamePaint();
         }
 
 
