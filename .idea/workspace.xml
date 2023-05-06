@@ -7,12 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38bbf1cf-15e0-4496-beaf-75683c3ab46b" name="变更" comment="实现Client类与Game类之间的互联互通">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="38bbf1cf-15e0-4496-beaf-75683c3ab46b" name="变更" comment="新建难度：CP_Monkey">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/network/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/structures/Chessboard_NEW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Chessboard_NEW.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/structures/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/structures/players/CP_ShortSighted.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/players/CP_ShortSighted.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,9 +29,10 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Yang's_first_attempt" />
+        <entry key="$PROJECT_DIR$" value="dev_AI" />
       </map>
     </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GithubDefaultAccount">
     <option name="defaultAccountId" value="3bd81892-e81f-4f3d-a0c4-b8472267f6b0" />
@@ -52,32 +53,19 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/26337/IdeaProjects/Jungle&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/ProjectRepository/ForkProjects/Homework4&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="Push.Settings">
     <option name="SHOW_DETAILS_PANEL" value="false" />
   </component>
-  <component name="RunManager" selected="应用程序.Client">
-    <configuration name="Chessboard_NEW" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="structures.Chessboard_NEW" />
-      <module name="Jungle" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="structures.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="应用程序.Client (3)">
     <configuration name="Client (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="network.Client" />
       <module name="Jungle" />
@@ -91,8 +79,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Client$GUI (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="network.Client$GUI" />
+    <configuration name="Client (2)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="network.Client" />
       <module name="Jungle" />
       <extension name="coverage">
         <pattern>
@@ -104,8 +92,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Client$GUI (5)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="network.Client$GUI" />
+    <configuration name="Client (3)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="network.Client" />
+      <module name="Jungle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Client (5)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="network.Client" />
       <module name="Jungle" />
       <extension name="coverage">
         <pattern>
@@ -132,10 +133,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="应用程序.Client" />
+        <item itemvalue="应用程序.Client (3)" />
+        <item itemvalue="应用程序.Client (2)" />
+        <item itemvalue="应用程序.Client (5)" />
         <item itemvalue="应用程序.Client (1)" />
-        <item itemvalue="应用程序.Client$GUI (1)" />
-        <item itemvalue="应用程序.Chessboard_NEW" />
+        <item itemvalue="应用程序.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -161,7 +163,24 @@
       <workItem from="1682347658711" duration="432000" />
       <workItem from="1682349213717" duration="3746000" />
       <workItem from="1682416952036" duration="26000" />
-      <workItem from="1682584145758" duration="2485000" />
+      <workItem from="1682584145758" duration="16883000" />
+      <workItem from="1682785343304" duration="182000" />
+      <workItem from="1682920729981" duration="21731000" />
+      <workItem from="1682948883323" duration="33000" />
+      <workItem from="1682948927759" duration="134000" />
+      <workItem from="1682990395593" duration="7272000" />
+      <workItem from="1683002213697" duration="3000" />
+      <workItem from="1683039984657" duration="637000" />
+      <workItem from="1683043719330" duration="3074000" />
+      <workItem from="1683124258042" duration="1392000" />
+      <workItem from="1683125945471" duration="20000" />
+      <workItem from="1683127098071" duration="108000" />
+      <workItem from="1683166791376" duration="1482000" />
+      <workItem from="1683176454758" duration="7000" />
+      <workItem from="1683300922199" duration="2715000" />
+      <workItem from="1683359909485" duration="11183000" />
+      <workItem from="1683381457206" duration="401000" />
+      <workItem from="1683381873527" duration="3333000" />
     </task>
     <task id="LOCAL-00001" summary="实现Client类与Game类之间的互联互通">
       <created>1682352940085</created>
@@ -170,7 +189,77 @@
       <option name="project" value="LOCAL" />
       <updated>1682352940085</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="实现游戏基本逻辑交互&#10;距离做出Demo只差把图标画上去">
+      <created>1682587064104</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1682587064104</updated>
+    </task>
+    <task id="LOCAL-00003" summary="优化一方胜利过程&#10;修复大象能吃老鼠的bug">
+      <created>1682785448698</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1682785448698</updated>
+    </task>
+    <task id="LOCAL-00004" summary="优化一方胜利过程&#10;修复大象能吃老鼠的bug">
+      <created>1682785482159</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1682785482159</updated>
+    </task>
+    <task id="LOCAL-00005" summary="尝试描述AI逻辑">
+      <created>1682785512850</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1682785512850</updated>
+    </task>
+    <task id="LOCAL-00006" summary="通过贪心算法与评估函数写出了一个只顾眼前利益的短视的AI">
+      <created>1682930412325</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1682930412325</updated>
+    </task>
+    <task id="LOCAL-00007" summary="通过Max-min算法写出了一个较高级AI，但实测目前版本存在一些问题">
+      <created>1682990367092</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1682990367092</updated>
+    </task>
+    <task id="LOCAL-00008" summary="添加简单的游戏内历史记录，即悔棋功能">
+      <created>1682991676176</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1682991676176</updated>
+    </task>
+    <task id="LOCAL-00009" summary="实现历史记录的保存与加载">
+      <created>1682997061523</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1682997061523</updated>
+    </task>
+    <task id="LOCAL-00010" summary="修复棋盘重置与悔棋相关的bug">
+      <created>1683047220588</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1683047220588</updated>
+    </task>
+    <task id="LOCAL-00011" summary="新建难度：CP_Monkey">
+      <created>1683171083529</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1683171083529</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,7 +279,16 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="修订了一些Yang's_first_attempt中的一些bug&#10;添加了一个新类ChessWithPos&#10;添加了一些测试方法，写在Chessboard_NEW的psvm中" />
     <MESSAGE value="实现Client类与Game类之间的互联互通" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现Client类与Game类之间的互联互通" />
+    <MESSAGE value="实现游戏基本逻辑交互&#10;距离做出Demo只差把图标画上去" />
+    <MESSAGE value="优化一方胜利过程&#10;修复大象能吃老鼠的bug" />
+    <MESSAGE value="尝试描述AI逻辑" />
+    <MESSAGE value="通过贪心算法与评估函数写出了一个只顾眼前利益的短视的AI" />
+    <MESSAGE value="通过Max-min算法写出了一个较高级AI，但实测目前版本存在一些问题" />
+    <MESSAGE value="添加简单的游戏内历史记录，即悔棋功能" />
+    <MESSAGE value="实现历史记录的保存与加载" />
+    <MESSAGE value="修复棋盘重置与悔棋相关的bug" />
+    <MESSAGE value="新建难度：CP_Monkey" />
+    <option name="LAST_COMMIT_MESSAGE" value="新建难度：CP_Monkey" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -200,11 +298,30 @@
           <option name="timeStamp" value="1" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/structures/Chessboard_NEW.java</url>
+          <line>132</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/network/Client.java</url>
-          <line>169</line>
-          <option name="timeStamp" value="3" />
+          <line>558</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/network/Client.java</url>
+          <line>232</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="structures.ChessWithPos" memberName="chess" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

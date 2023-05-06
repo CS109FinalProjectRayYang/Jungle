@@ -5,10 +5,7 @@ import structures.Game;
 import structures.History;
 import structures.chesses.Chess;
 import structures.chesses.Elephant;
-import structures.players.CP_ForeSighted;
-import structures.players.CP_ShortSighted;
-import structures.players.ComputerPlayer;
-import structures.players.HumanPlayer;
+import structures.players.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,15 +20,35 @@ import javax.swing.JOptionPane;
 public class Client {
     static GUI myGUI;
     static int nowPlayer;
+    static Player player;
+    static int colorMode = 1;
+    // gameMode = 1 : 先手
+    // gameMode = -1 : 后手
+    static int counterPlayerMode = 0;
+    // counterPlayerMode = 1 : 入门
+    // counterPlayerMode = 2 : 简单
+    // counterPlayerMode = 3 : 普通
     static Game game = new Game();
 
     public static void setNowPlayer(int nowPlayer) {
         Client.nowPlayer = nowPlayer;
     }
+
+    public static void setPlayer(Player player) {
+        Client.player = player;
+    }
+
     public static void winPaint(int player) {
         myGUI.winPaint(player);
     }
 
+    public static void updateGamePaint() {
+        myGUI.updateGamePaint();
+    }
+
+    public static void setCountTime(int nowPlayer, int time) {
+        myGUI.countTimePaint(nowPlayer, time);
+    }
     public static void main(String[] args) {
 
         try {
@@ -53,6 +70,8 @@ public class Client {
         // 2 : 本地游戏页面
         // 3 : 联机游戏页面
         // 4 : 游戏进行中页面
+        // 5 : 选择AI难度
+        // 6 : 选择先后手
         int page = 0;
         //是否有
         boolean clicked = false;
@@ -65,6 +84,11 @@ public class Client {
         JPanel initButtonPanel = new JPanel();
         JPanel localGameButtonPanel = new JPanel();
         JPanel gameButtonPanel = new JPanel();
+        JPanel difficultyPanel = new JPanel();
+        JPanel chooseColorPanel = new JPanel();
+        JPanel messagePanel = new JPanel();
+        JPanel messageButtonPanel = new JPanel();
+        JPanel mapDrawPanel = new MyDrawPanel();
         //按钮
         JButton localGameButton = new JButton("本地游戏");
         JButton onlineGameButton = new JButton("联机对战");
@@ -78,7 +102,17 @@ public class Client {
         JButton saveButton = new JButton("保存");
         JButton loadButton = new JButton("加载");
         JButton backButton = new JButton("返回");
+        JButton easyButton = new JButton("入门");
+        JButton normalButton = new JButton("简单");
+        JButton difficultButton = new JButton("普通");
+        JButton chooseBlueButton = new JButton("先手");
+        JButton chooseRedButton = new JButton("后手");
+        JButton sendMessageButton = new JButton("发送");
+        JButton clearMessageButton = new JButton("清空");
         //文本框
+        JTextArea messageBox = new JTextArea(35, 40);
+        JTextField inputBox = new JTextField(20);
+        JScrollPane messageBoxScroller = new JScrollPane(messageBox);
         //图片
         ImageIcon mainFrameImgOrig = new ImageIcon("data/img/Jungle.jpg");
         ImageIcon mainFrameImg = new ImageIcon("data/img/Jungle.jpg");
@@ -88,8 +122,11 @@ public class Client {
         //标签
         JLabel mainFrameImgLabel = new JLabel(mainFrameImg);
         JLabel mapImgLabel = new JLabel(mapImg);
+        JLabel chooseDifficultyLabel = new JLabel("难度：");
+        JLabel chooseColorLabel = new JLabel("行动：");
         //字体
         Font buttonFont = new Font("楷体", Font.BOLD, 20);
+        Font messageFont = new Font("楷体", Font.BOLD, 14);
         //进程
         GameStart gameStart = new GameStart();
 
@@ -97,6 +134,10 @@ public class Client {
 
 
         public void run() {
+            // 设置图片大小
+            mainFrameImg.setImage(mainFrameImgOrig.getImage().getScaledInstance(700, 560, Image.SCALE_DEFAULT));
+            mapImg.setImage(mapImgOrig.getImage().getScaledInstance(1000, 700, Image.SCALE_DEFAULT));
+
             // 加载主窗体
             loadMainFrame();
 
@@ -108,9 +149,11 @@ public class Client {
 
             loadGameButtonPanel();
 
-            // 设置图片大小
-            mainFrameImg.setImage(mainFrameImgOrig.getImage().getScaledInstance(700, 560, Image.SCALE_DEFAULT));
-            mapImg.setImage(mapImgOrig.getImage().getScaledInstance(1000, 700, Image.SCALE_DEFAULT));
+            loadDifficultyPanel();
+
+            loadChooseColorPanel();
+
+            loadMessagePanel();
 
             // 在上述准备工作均完成后，绘制主窗体
             initPaint();
@@ -167,12 +210,57 @@ public class Client {
 
             mainFramePanel.add(mapImgLabel);
             mainFramePanel.add(gameButtonPanel);
+            mainFramePanel.add(messagePanel);
 
-            mainFrame.setLocation(200, 100);
+            mainFrame.setLocation(50, 30);
             mainFrame.pack();
 
             gameStart = new GameStart();
             gameStart.start();
+        }
+        private void updateGamePaint() {
+            mainFramePanel.removeAll();
+
+            updateMessageBox();
+
+            drawAnimals();
+
+            mainFramePanel.add(mapImgLabel);
+            mainFramePanel.add(gameButtonPanel);
+            mainFramePanel.add(messagePanel);
+
+            mainFrame.repaint();
+
+        }
+
+        private void drawAnimals() {
+            mainFramePanel.setLayout(null);
+            Chessboard_NEW chessboard = game.getChessboard();
+            for (int i = 1; i <= Chessboard_NEW.getSizeY(); i++) {
+                for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
+                    Chess chess = chessboard.getChess(j, i);
+                    if (chess != null) {
+                        int posX = 65 + 80 * j;
+                        int posY = 45 + 80 * i;
+                        ImageIcon chessImgOrig = chess.getImg();
+                        ImageIcon chessImg = new ImageIcon();
+                        chessImg.setImage(chessImgOrig.getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT));
+                        JLabel imgLabel = new JLabel(chessImg);
+                        imgLabel.setBounds(posX, posY, 80, 80);
+
+                        mainFramePanel.add(imgLabel);
+                    }
+                }
+            }
+            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
+        }
+
+        private void updateMessageBox() {
+            messageBox.setText("");
+            String[] lines = game.getMessages();
+            for (String line : lines) {
+                messageBox.append(line + "\n");
+            }
         }
 
         private void winPaint(int player) {
@@ -184,6 +272,53 @@ public class Client {
             }
             JOptionPane.showMessageDialog(mainFrame, winner + "获胜！");
         }
+
+        private void chooseDifficultyPaint() {
+            page = 5;
+
+            mainFramePanel.removeAll();
+
+            mainFramePanel.add(mainFrameImgLabel);
+            mainFramePanel.add(difficultyPanel);
+
+            mainFrame.repaint();
+
+            mainFrame.setLocation(300, 150);
+            mainFrame.pack();
+        }
+
+        private void chooseColorPaint() {
+            page = 6;
+
+            mainFramePanel.removeAll();
+
+            mainFramePanel.add(mainFrameImgLabel);
+            mainFramePanel.add(chooseColorPanel);
+
+            mainFrame.repaint();
+
+            mainFrame.setLocation(300, 150);
+            mainFrame.pack();
+        }
+
+        public void countTimePaint(int nowPlayer, int time) {
+            // TODO: ERROR
+            int posY = 10;
+            int posX = 10;
+
+            ImageIcon image = new ImageIcon("data/img/animals/blue/1.png");
+            JLabel testLabel = new JLabel(image);
+
+            testLabel.setBounds(50 * time, 10, 100, 100);
+
+//            mainFramePanel.removeAll();
+            mainFramePanel.setLayout(null);
+            mainFramePanel.add(testLabel);
+            mainFramePanel.repaint();
+        }
+
+
+
 
 
 
@@ -209,9 +344,11 @@ public class Client {
                     //在游戏中才生效
                     if (page == 4) {
                         int[] clickPos = getClickPos(e);
-                        System.out.printf("(%d, %d) Clicked.\n", clickPos[0], clickPos[1]);
-                        if (!game.getInputted()) {
-                            click(clickPos);
+                        if (!Chess.isOutOfBound(clickPos)) {
+                            System.out.printf("(%d, %d) Clicked.\n", clickPos[0], clickPos[1]);
+                            if (!game.getInputted() && player.getIdentity() == 1) {
+                                click(clickPos);
+                            }
                         }
                     }
                 }
@@ -219,7 +356,7 @@ public class Client {
         }
 
 
-        private void click ( int[] clickPos){
+        private void click (int[] clickPos){
             if (!clicked) {
                 // 如果没有棋子被选择
 
@@ -329,9 +466,97 @@ public class Client {
             gameButtonPanel.add(backButton);
         }
 
+        private void loadDifficultyPanel() {
+            easyButton.setFont(buttonFont);
+            normalButton.setFont(buttonFont);
+            difficultButton.setFont(buttonFont);
+            chooseDifficultyLabel.setFont(buttonFont);
 
+            easyButton.addActionListener(e -> {
+                counterPlayerMode = 1;
+                chooseColorPaint();
+            });
+            normalButton.addActionListener(e -> {
+                counterPlayerMode = 2;
+                chooseColorPaint();
+            });
+            difficultButton.addActionListener(e -> {
+                counterPlayerMode = 3;
+                chooseColorPaint();
+            });
 
+            difficultyPanel.setLayout(new BoxLayout(difficultyPanel, BoxLayout.Y_AXIS));
+            difficultyPanel.add(chooseDifficultyLabel);
+            difficultyPanel.add(easyButton);
+            difficultyPanel.add(normalButton);
+            difficultyPanel.add(difficultButton);
+            difficultyPanel.add(Box.createVerticalGlue());
+        }
 
+        private void loadChooseColorPanel() {
+            chooseBlueButton.setFont(buttonFont);
+            chooseRedButton.setFont(buttonFont);
+            chooseColorLabel.setFont(buttonFont);
+
+            chooseBlueButton.addActionListener(e -> {
+                colorMode = 1;
+                loadGame();
+            });
+            chooseRedButton.addActionListener(e -> {
+                colorMode = -1;
+                loadGame();
+            });
+
+            chooseColorPanel.setLayout(new BoxLayout(chooseColorPanel, BoxLayout.Y_AXIS));
+            chooseColorPanel.add(chooseColorLabel);
+            chooseColorPanel.add(chooseBlueButton);
+            chooseColorPanel.add(chooseRedButton);
+            chooseColorPanel.add(Box.createVerticalGlue());
+        }
+
+        private void loadGame() {
+            game = new Game();
+            Player counterPlayer = new HumanPlayer();
+            if (counterPlayerMode == 1) {
+                counterPlayer = new CP_Monkey();
+            } else if (counterPlayerMode == 2) {
+                counterPlayer = new CP_ShortSighted();
+            } else if (counterPlayerMode == 3) {
+                counterPlayer = new CP_ForeSighted();
+            }
+            if (colorMode == 1) {
+                game.setPlayer(new HumanPlayer(), counterPlayer);
+            } else {
+                game.setPlayer(counterPlayer, new HumanPlayer());
+            }
+            gamePaint();
+        }
+
+        private void loadMessagePanel() {
+            messageBoxScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            messageBoxScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+            messageBox.setFont(messageFont);
+            inputBox.setFont(messageFont);
+
+            sendMessageButton.setFont(buttonFont);
+            clearMessageButton.setFont(buttonFont);
+
+            sendMessageButton.addActionListener(e -> {
+                game.messageInput(inputBox.getText());
+                inputBox.setText("");
+                updateMessageBox();
+            });
+
+            messageButtonPanel.setLayout(new BoxLayout(messageButtonPanel, BoxLayout.X_AXIS));
+            messageButtonPanel.add(Box.createHorizontalGlue());
+            messageButtonPanel.add(sendMessageButton);
+
+            messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+            messagePanel.add(messageBoxScroller);
+            messagePanel.add(inputBox);
+            messagePanel.add(messageButtonPanel);
+        }
 
 
 
@@ -378,9 +603,7 @@ public class Client {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                game = new Game();
-                game.setPlayer(new CP_ForeSighted(), new HumanPlayer());
-                gamePaint();
+                chooseDifficultyPaint();
             }
         }
         private class backInitButtonListener implements ActionListener {
@@ -400,6 +623,8 @@ public class Client {
             public void actionPerformed(ActionEvent e) {
                 if (game.getPlayer().getIdentity() == 1 && game.getHistorySize() > 1) {
                     game.buildFromHistory(2);
+                    updateGamePaint();
+                    game.messageInput("Regret", nowPlayer);
                     System.out.println("Regretted successfully!");
                     JOptionPane.showMessageDialog(mainFrame, "悔棋成功");
                 } else {
@@ -416,8 +641,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameStart.interrupt();
-                Game newGame = new Game(game.getPlayerBlue(), game.getPlayerRed());
-                game = newGame;
+                game = new Game(game.getPlayerBlue(), game.getPlayerRed());
                 gameStart = new GameStart();
                 gameStart.start();
                 System.out.println("Resettled successfully!");
@@ -429,8 +653,10 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long nowTime = System.currentTimeMillis();
-                String historyName=JOptionPane.showInputDialog("请输入记录名称","history"+nowTime);
-                saveHistory(historyName);
+                String historyName = JOptionPane.showInputDialog("请输入记录名称","history"+nowTime);
+                if (historyName != null) {
+                    saveHistory(historyName);
+                }
             }
         }
         private class loadButtonListener implements ActionListener {
@@ -447,6 +673,7 @@ public class Client {
                 int userOption = JOptionPane.showConfirmDialog(mainFrame, "确认退出游戏吗？");
                 if (userOption == JOptionPane.OK_OPTION) {
                     GameStart.interrupted();
+                    game = new Game();
                     initPaint();
                 }
             }
@@ -523,10 +750,12 @@ public class Client {
 
 
 
-
-
-
-
+        class MyDrawPanel extends JPanel {
+            public void paintComponent(Graphics g) {
+                Image mapImgDraw = mapImg.getImage();
+                g.drawImage(mapImgDraw, 0, 0, this);
+            }
+        }
 
         static class GameStart extends Thread {
             @Override
@@ -539,5 +768,6 @@ public class Client {
                 game.start();
             }
         }
+
     }
 }

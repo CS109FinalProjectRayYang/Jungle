@@ -131,7 +131,7 @@ public class Chessboard_NEW {
             for (int j = 1; j <= sizeX; j++) {
                 if (chessMap[j][i] != null) {
                     char c = chessMap[j][i].getChessName().charAt(0);
-                    System.out.printf(" %c ", chessMap[j][i].getChessName().charAt(0));
+                    System.out.printf(" %c ", c);
                 } else {
                     char c = terrains[j][i].getName().charAt(0);
                     switch (c) {
@@ -172,6 +172,9 @@ public class Chessboard_NEW {
      */
     public Chess getChess(int[] pos) {
         return chessMap[pos[0]][pos[1]];
+    }
+    public Chess getChess(int x, int y) {
+        return chessMap[x][y];
     }
 
     /**

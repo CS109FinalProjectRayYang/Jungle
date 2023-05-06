@@ -5,6 +5,7 @@ import structures.players.ComputerPlayer;
 import structures.players.HumanPlayer;
 import structures.players.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game {
@@ -16,10 +17,12 @@ public class Game {
     Chessboard_NEW chessboard;
     boolean inputted = true;
     int nowPlayer = 1;
+    int countWaitingTime = 0;
     String receiveCommand;
     History history = new History();
     HashMap<Integer, String> nameMap = new HashMap<>();
     HashMap<Integer, Player> playerMap = new HashMap<>();
+    ArrayList<String> messages = new ArrayList<>();
     public Game() {
 
     }
@@ -61,30 +64,52 @@ public class Game {
 
         // 新建并初始化棋盘
         chessboard = new Chessboard_NEW();
-        buildFromHistory(history);
+        chessboard.initBoard();
 
         // 游戏开始
         nowPlayer = 1;
-        if (withClient) {
-            System.out.println("Game Started!");
-        }
+
+        System.out.println("Game Started!");
         // 在未分出胜负之前循环执行
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
+
+            Client.updateGamePaint();
+
             step++;
             // 打印棋盘
-            if (withClient) {
-                chessboard.printBoard();
-//                System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
-                System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
-            }
+            chessboard.printBoard();
+//          System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
+            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
 
-            if (withClient) {
-                Client.setNowPlayer(nowPlayer);
-            }
+            Client.setNowPlayer(nowPlayer);
+            Client.setPlayer(playerMap.get(nowPlayer));
+
             int identity = playerMap.get(nowPlayer).getIdentity();
 
             if (identity == 1) {
-                // 开放输入端口，等待输入
+                // 本地客户端回合，开放输入端口，等待Client输入
+                inputted = false;
+                while (!inputted) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored) {
+                    }
+                    countWaitingTime++;
+
+                    // 计时
+                    if (countWaitingTime % 10 == 1) {
+                        int timeCountDown = 15 - countWaitingTime / 10;
+//                        Client.setCountTime(nowPlayer, timeCountDown);
+                    }
+                    if (countWaitingTime == 150) {
+
+                    }
+                }
+            } else if (identity == 2) {
+                // 电脑回合，等待电脑计算
+                playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
+            } else if (identity == 3) {
+                // 对手回合，开放输入端口，等待网络输入
                 inputted = false;
                 while (!inputted) {
                     try {
@@ -92,16 +117,11 @@ public class Game {
                     } catch (InterruptedException ignored) {
                     }
                 }
-            } else if (identity == 2) {
-                playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
-            } else if (identity == 3) {
-
             }
 
-            if (withClient) {
-                // 打印输入状态，转换攻方
-                System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
-            }
+            // 打印输入状态，转换攻方
+            System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
+
 
             nowPlayer = -nowPlayer;
         }
@@ -110,10 +130,10 @@ public class Game {
         // 如果游戏结束
         chessboard.printBoard();
         nowPlayer = 0;
-        if (withClient) {
-            Client.setNowPlayer(nowPlayer);
-            Client.winPaint(gameCondition);
-        }
+
+        Client.setNowPlayer(nowPlayer);
+        Client.winPaint(gameCondition);
+
         if (gameCondition != 0) {
             System.out.printf("%s Wins!\n", nameMap.get(gameCondition));
         } else {
@@ -133,6 +153,20 @@ public class Game {
         addHistory(pos, nextPos);
         inputted = true;
         receiveCommand = command;
+        messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), command));
+    }
+    public void messageInput(String line) {
+        messages.add("[local] %s".formatted(line));
+    }
+    public void messageInput(String line, int nowPlayer) {
+        messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), line));
+    }
+    public String[] getMessages() {
+        String[] ret = new String[messages.size()];
+        for (int i = 0; i < messages.size(); i++) {
+            ret[i] = messages.get(i);
+        }
+        return ret;
     }
     private void addHistory(int[] pos, int[] nextPos) {
         history.addHistory(pos, nextPos);
