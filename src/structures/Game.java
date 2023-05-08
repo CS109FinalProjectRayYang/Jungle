@@ -74,7 +74,7 @@ public class Game {
         // 在未分出胜负之前循环执行
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
-            Client.updateGamePaint();
+            Client.updateGamePaint(password);
 
             step++;
             // 打印棋盘
@@ -84,7 +84,7 @@ public class Game {
 
             Client.setNowPlayer(nowPlayer);
             Client.setPlayer(playerMap.get(nowPlayer));
-            Client.updateGamePaint();
+            Client.updateGamePaint(password);
 
             int identity = playerMap.get(nowPlayer).getIdentity();
 
@@ -100,14 +100,14 @@ public class Game {
                     countWaitingTime++;
 
                     // 计时
-                    if (countWaitingTime % 10 == 1) {
-                        int timeCountDown = 15 - countWaitingTime / 10;
+                    if (countWaitingTime % 10 == 0) {
+                        int timeCountDown = 20 - countWaitingTime / 10;
                         if (timeCountDown % 5 == 0 || timeCountDown < 5) {
                             messageInput("%d seconds left".formatted(timeCountDown), "Warning");
-                            Client.updateGamePaint();
+                            Client.updateGamePaint(password);
                         }
                     }
-                    if (countWaitingTime == 150) {
+                    if (countWaitingTime == 200) {
                         inputted = true;
                         messageInput("Out of time limit.", nowPlayer);
                         break;

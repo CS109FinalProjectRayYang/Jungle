@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -29,6 +31,8 @@ public class Client {
     // counterPlayerMode = 2 : 简单
     // counterPlayerMode = 3 : 普通
     static Game game = new Game();
+    static BufferedReader reader;
+    static BufferedWriter writer;
 
     public static void setNowPlayer(int nowPlayer) {
         Client.nowPlayer = nowPlayer;
@@ -42,8 +46,10 @@ public class Client {
         myGUI.winPaint(player);
     }
 
-    public static void updateGamePaint() {
-        myGUI.updateGamePaint();
+    public static void updateGamePaint(int value) {
+        if (value == password) {
+            myGUI.updateGamePaint();
+        }
     }
 
     public static void setCountTime(int time, int password) {
@@ -66,6 +72,7 @@ public class Client {
 
     }
     private static class GUI {
+        LoginGUI loginGUI;
         Repaint painter;
         //当前页面
         // 0 : 无页面
@@ -668,7 +675,7 @@ public class Client {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                onlineGamePaint();
+                onlineGame();
             }
         }
         private class exitGameButtonListener implements ActionListener {
@@ -880,5 +887,101 @@ public class Client {
             }
         }
 
+
+        private void onlineGame() {
+            try {
+                String ip = "10.27.40.151";
+                Socket socket = new Socket(ip, 8080);
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+                loginGUI = new LoginGUI();
+                loginGUI.run();
+            } catch (IOException ignore) {
+                System.out.println("Server Error");
+                JOptionPane.showMessageDialog(mainFrame, "无法连接至服务器");
+            }
+        }
+
+        class LoginGUI {
+            JFrame loginFrame = new JFrame();
+            JTextField usernameField = new JTextField(15);
+            JTextField passwordField = new JPasswordField(15);
+            JLabel usernameLabel = new JLabel(" 用户：");
+            JLabel passwordLabel = new JLabel(" 密码：");
+            JButton loginButton = new JButton("登录");
+            JButton registerButton = new JButton("注册");
+            JPanel textPanel = new JPanel();
+            JPanel labelPanel = new JPanel();
+            JPanel upperPanel = new JPanel();
+            JPanel lowerPanel = new JPanel();
+            JPanel mainPanel = new JPanel();
+            public void run() {
+                loginButton.addActionListener(e -> {
+                    try {
+                        writer.write("login %s %s".formatted(usernameField.getText(), passwordField.getText()));
+                        writer.newLine();
+                        writer.flush();
+                        String message = reader.readLine();
+                        if (message.equals("LoginSuccessfully")) {
+                            JOptionPane.showMessageDialog(loginFrame, "登录成功");
+                            loginFrame.setVisible(false);
+                            login();
+                        } else {
+                            JOptionPane.showMessageDialog(loginFrame, "登陆失败：用户名或密码错误");
+                        }
+                    } catch (IOException ignore) {
+                        System.out.println("Server Error");
+                        JOptionPane.showMessageDialog(loginFrame, "无法连接至服务器");
+                    }
+                });
+
+                registerButton.addActionListener(e -> {
+                    try {
+                        System.out.println("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
+                        writer.write("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
+                        writer.newLine();
+                        writer.flush();
+                        JOptionPane.showMessageDialog(loginFrame, "注册成功");
+                    } catch (IOException ignore) {
+                        System.out.println("Server Error");
+                        JOptionPane.showMessageDialog(loginFrame, "无法连接至服务器");
+                    }
+                });
+
+                usernameLabel.setFont(new Font("楷体", Font.BOLD, 17));
+                passwordLabel.setFont(new Font("楷体", Font.BOLD, 17));
+
+                labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+                labelPanel.add(usernameLabel);
+                labelPanel.add(passwordLabel);
+
+                textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+                textPanel.add(usernameField);
+                textPanel.add(passwordField);
+
+                upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
+                upperPanel.add(labelPanel);
+                upperPanel.add(textPanel);
+
+                lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.X_AXIS));
+                lowerPanel.add(loginButton);
+                lowerPanel.add(registerButton);
+
+                mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+                mainPanel.add(upperPanel);
+                mainPanel.add(lowerPanel);
+
+                loginFrame.getContentPane().add(mainPanel);
+                loginFrame.setLocation(500, 300);
+                loginFrame.pack();
+                loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                loginFrame.setVisible(true);
+            }
+
+        }
+        private void login() {
+//            loginPaint();
+
+        }
     }
 }

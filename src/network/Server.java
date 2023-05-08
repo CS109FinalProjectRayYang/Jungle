@@ -69,6 +69,7 @@ public class Server {
                     }
                 } catch (IOException e) {
                     System.out.println(socket.getRemoteSocketAddress()+" disconnected.");
+                    break;
                 }
             }
         }
@@ -170,7 +171,18 @@ public class Server {
         }
         private void writeFile(String path, String ... lines) {
             File file = new File(path);
-            file.mkdirs();
+            if (!file.exists()) {
+                String rootPath = null;
+                for (int i = path.length() - 1; i >= 0; i--) {
+                    if (path.charAt(i) == '/') {
+                        rootPath = path.substring(0, i);
+                    }
+                }
+                if (rootPath != null) {
+                    File rootFile = new File(rootPath);
+                    rootFile.mkdir();
+                }
+            }
             try {
                 BufferedWriter fWriter = new BufferedWriter(new FileWriter(file));
                 for (int i = 0; i < lines.length; i++) {
