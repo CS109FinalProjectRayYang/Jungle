@@ -938,12 +938,16 @@ public class Client {
                         writer.newLine();
                         writer.flush();
                         String message = reader.readLine();
-                        if (message.equals("LoginSuccessfully")) {
-                            JOptionPane.showMessageDialog(loginFrame, "登录成功");
-                            loginFrame.setVisible(false);
-                            login();
-                        } else {
-                            JOptionPane.showMessageDialog(loginFrame, "登陆失败：用户名或密码错误");
+
+                        switch (message) {
+                            case "LoginSuccessfully" -> {
+                                JOptionPane.showMessageDialog(loginFrame, "登录成功");
+                                loginFrame.setVisible(false);
+                                login();
+                            }
+                            case "PasswordError" -> JOptionPane.showMessageDialog(loginFrame, "登陆失败：密码错误");
+                            case "UsernameNotFound" -> JOptionPane.showMessageDialog(loginFrame, "登录失败：用户名不存在");
+                            default -> JOptionPane.showMessageDialog(loginFrame, "登陆失败：未知错误");
                         }
                     } catch (IOException ignore) {
                         System.out.println("Server Error");
@@ -953,7 +957,6 @@ public class Client {
 
                 registerButton.addActionListener(e -> {
                     try {
-                        System.out.println("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
                         writer.write("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
                         writer.newLine();
                         writer.flush();

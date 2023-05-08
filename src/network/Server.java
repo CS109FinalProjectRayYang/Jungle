@@ -93,11 +93,14 @@ public class Server {
                 ArrayList<String> lines = readFile(path);
                 if (password.equals(lines.get(1))) {
                     sendMessage("LoginSuccessfully");
+                    System.out.println("登录成功");
                 } else {
                     sendMessage("PasswordError");
+                    System.out.println("密码错误");
                 }
             } else {
                 sendMessage("UsernameNotFound");
+                System.out.println("用户未注册");
             }
         }
         private void newRoom(String username, String roomName) {
@@ -176,6 +179,7 @@ public class Server {
                 for (int i = path.length() - 1; i >= 0; i--) {
                     if (path.charAt(i) == '/') {
                         rootPath = path.substring(0, i);
+                        break;
                     }
                 }
                 if (rootPath != null) {
@@ -192,6 +196,23 @@ public class Server {
                 fWriter.flush();
                 fWriter.close();
             } catch (IOException ignore) {}
+        }
+        private void writeFile(String path, boolean mkdir, String ... lines) {
+            if (mkdir) {
+                String rootPath = null;
+                for (int i = path.length() - 1; i >= 0; i--) {
+                    if (path.charAt(i) == '/') {
+                        rootPath = path.substring(0, i);
+                        break;
+                    }
+                }
+                if (rootPath != null) {
+                    File rootFile = new File(rootPath);
+                    rootFile.mkdir();
+                }
+            } else {
+                writeFile(path, lines);
+            }
         }
         private void sendMessage(String message) throws IOException {
             writer.write(message);
