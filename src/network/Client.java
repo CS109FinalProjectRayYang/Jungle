@@ -430,6 +430,8 @@ public class Client {
             mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             mainFrame.setSize(700, 500);
 
+            mainFrame.setResizable(false);
+
             mainFrame.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
