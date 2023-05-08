@@ -309,7 +309,7 @@ public class Client {
                         int id = chess.getID();
                         int team = chess.getTeam();
                         if (team == -1) team = 0;
-                        System.out.println("team: %d, id: %d".formatted(team, id));
+//                        System.out.println("team: %d, id: %d".formatted(team, id));
                         ImageIcon chessImg = chess.getImg();
                         ImageIcon chessImgGrey = chess.getGreyImg();
                         chessImg.setImage(chessImg.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
