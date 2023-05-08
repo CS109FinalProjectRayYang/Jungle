@@ -731,6 +731,7 @@ public class Client {
                     game.messageInput("Regret", nowPlayer);
                     System.out.println("Regretted successfully!");
                     JOptionPane.showMessageDialog(mainFrame, "悔棋成功");
+                    updateGamePaint();
                 } else {
                     if (game.getPlayer().getIdentity() != 1) {
                         JOptionPane.showMessageDialog(mainFrame, "悔棋失败：不是你的回合");
