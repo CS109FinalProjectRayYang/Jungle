@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class Game {
     boolean withClient = true;
+    int password = 0;
     int step = 0;
     Player playerBlue;
     Player playerRed;
@@ -90,9 +91,10 @@ public class Game {
             if (identity == 1) {
                 // 本地客户端回合，开放输入端口，等待Client输入
                 inputted = false;
+                countWaitingTime = 0;
                 while (!inputted) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(90);
                     } catch (InterruptedException ignored) {
                     }
                     countWaitingTime++;
@@ -100,10 +102,15 @@ public class Game {
                     // 计时
                     if (countWaitingTime % 10 == 1) {
                         int timeCountDown = 15 - countWaitingTime / 10;
-//                        Client.setCountTime(nowPlayer, timeCountDown);
+                        if (timeCountDown % 5 == 0 || timeCountDown < 5) {
+                            messageInput("%d seconds left".formatted(timeCountDown), "Warning");
+                            Client.updateGamePaint();
+                        }
                     }
                     if (countWaitingTime == 150) {
-
+                        inputted = true;
+                        messageInput("Out of time limit.", nowPlayer);
+                        break;
                     }
                 }
             } else if (identity == 2) {
@@ -162,6 +169,9 @@ public class Game {
     public void messageInput(String line, int nowPlayer) {
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), line));
     }
+    public void messageInput(String line, String name) {
+        messages.add("[%s] %s".formatted(name, line));
+    }
     public String[] getMessages() {
         String[] ret = new String[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
@@ -217,5 +227,8 @@ public class Game {
             nowPlayer = -1;
         }
         Client.setNowPlayer(nowPlayer);
+    }
+    public void setPassword(int value) {
+        password = value;
     }
 }

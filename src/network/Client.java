@@ -4,7 +4,6 @@ import structures.Chessboard_NEW;
 import structures.Game;
 import structures.History;
 import structures.chesses.Chess;
-import structures.chesses.Elephant;
 import structures.players.*;
 
 import javax.swing.*;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class Client {
+    static int password = 0;
     static GUI myGUI;
     static int nowPlayer = 1;
     static Player player;
@@ -46,8 +46,10 @@ public class Client {
         myGUI.updateGamePaint();
     }
 
-    public static void setCountTime(int nowPlayer, int time) {
-        myGUI.countTimePaint(nowPlayer, time);
+    public static void setCountTime(int time, int password) {
+        if (password == Client.password) {
+            myGUI.setCountTime(time);
+        }
     }
     public static void main(String[] args) {
 
@@ -64,6 +66,7 @@ public class Client {
 
     }
     private static class GUI {
+        Repaint painter;
         //当前页面
         // 0 : 无页面
         // 1 : 主页面
@@ -124,6 +127,9 @@ public class Client {
         JLabel mapImgLabel = new JLabel(mapImg);
         JLabel chooseDifficultyLabel = new JLabel("难度：");
         JLabel chooseColorLabel = new JLabel("行动：");
+        JLabel timeLabel = new JLabel();
+        JLabel[][] imgLabels = new JLabel[2][9];
+        JLabel[][] imgLabelsGrey = new JLabel[2][9];
         //字体
         Font buttonFont = new Font("楷体", Font.BOLD, 20);
         Font messageFont = new Font("楷体", Font.BOLD, 14);
@@ -154,6 +160,8 @@ public class Client {
             loadChooseColorPanel();
 
             loadMessagePanel();
+
+            loadImg();
 
             // 在上述准备工作均完成后，绘制主窗体
             initPaint();
@@ -219,25 +227,33 @@ public class Client {
             gameStart.start();
         }
         private void updateGamePaint() {
-//            mainFramePanel.removeAll();
-//
-//            updateMessageBox();
-//
-//            drawAnimals();
-//
-//            if (clicked) {
-//                drawChoose();
-//            }
-//
-//            mainFramePanel.add(mapImgLabel);
-//            mainFramePanel.add(gameButtonPanel);
-//            mainFramePanel.add(messagePanel);
-//
-//            mainFrame.repaint();
+            mainFramePanel.removeAll();
 
-            Repaint painter = new Repaint();
-            painter.start();
+            updateMessageBox();
 
+            drawAnimals();
+
+//            drawTime();
+
+            if (clicked) {
+                drawChoose();
+            }
+
+            mainFramePanel.add(mapImgLabel);
+            mainFramePanel.add(gameButtonPanel);
+            mainFramePanel.add(messagePanel);
+
+            mainFrame.repaint();
+
+//            Repaint painter = new Repaint();
+//            painter.start();
+
+
+            try {
+                Thread.sleep(200);
+            } catch (Exception ignore) {
+
+            }
         }
 
         private void drawAnimals() {
@@ -249,16 +265,24 @@ public class Client {
                     if (chess != null) {
                         int posX = 50 + 80 * j;
                         int posY = 45 + 80 * i;
-                        ImageIcon chessImg;
+//                        ImageIcon chessImg;
+//                        if (nowPlayer == chess.getTeam()) {
+//                            chessImg = chess.getImg();
+//                        } else {
+//                            chessImg = chess.getGreyImg();
+//                        }
+
+//                        chessImg.setImage(chessImg.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
+
+//                        JLabel imgLabel = new JLabel(chessImg);
+                        int team = chess.getTeam();
+                        if (team == -1) team = 0;
+                        JLabel imgLabel;
                         if (nowPlayer == chess.getTeam()) {
-                            chessImg = chess.getImg();
+                            imgLabel = imgLabels[team][chess.getID()];
                         } else {
-                            chessImg = chess.getGreyImg();
+                            imgLabel = imgLabelsGrey[team][chess.getID()];
                         }
-
-                        chessImg.setImage(chessImg.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
-
-                        JLabel imgLabel = new JLabel(chessImg);
                         imgLabel.setBounds(posX, posY, 116, 80);
 
                         mainFramePanel.add(imgLabel);
@@ -266,6 +290,28 @@ public class Client {
                 }
             }
             mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
+        }
+
+        private void loadImg() {
+            Chessboard_NEW chessboard = new Chessboard_NEW();
+            chessboard.initBoard();
+            for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
+                for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+                    Chess chess = chessboard.getChess(i, j);
+                    if (chess != null) {
+                        int id = chess.getID();
+                        int team = chess.getTeam();
+                        if (team == -1) team = 0;
+                        System.out.println("team: %d, id: %d".formatted(team, id));
+                        ImageIcon chessImg = chess.getImg();
+                        ImageIcon chessImgGrey = chess.getGreyImg();
+                        chessImg.setImage(chessImg.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
+                        chessImgGrey.setImage(chessImgGrey.getImage().getScaledInstance(116, 80, Image.SCALE_DEFAULT));
+                        imgLabels[team][id] = new JLabel(chessImg);
+                        imgLabelsGrey[team][id] = new JLabel(chessImgGrey);
+                    }
+                }
+            }
         }
 
         private void drawChoose() {
@@ -288,6 +334,19 @@ public class Client {
 
                 mainFramePanel.add(chosenImgLabel);
             }
+
+            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
+        }
+
+        private void drawTime() {
+            int posX = 460 + 440 * nowPlayer;
+            int posY = 10;
+
+            mainFramePanel.setLayout(null);
+
+            timeLabel.setBounds(posX, posY, 80, 80);
+
+            mainFramePanel.add(timeLabel);
 
             mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
@@ -338,20 +397,9 @@ public class Client {
             mainFrame.pack();
         }
 
-        public void countTimePaint(int nowPlayer, int time) {
-            // TODO: ERROR
-            int posY = 10;
-            int posX = 10;
-
-            ImageIcon image = new ImageIcon("data/img/animals/blue/1.png");
-            JLabel testLabel = new JLabel(image);
-
-            testLabel.setBounds(50 * time, 10, 100, 100);
-
-//            mainFramePanel.removeAll();
-            mainFramePanel.setLayout(null);
-            mainFramePanel.add(testLabel);
-            mainFramePanel.repaint();
+        public void setCountTime(int time) {
+            timeLabel.setText("%d".formatted(time));
+            updateGamePaint();
         }
 
 
@@ -480,6 +528,8 @@ public class Client {
 
 
         private void loadGameButtonPanel() {
+            timeLabel.setFont(new Font("楷体", Font.BOLD, 50));
+
             pauseButton.setFont(buttonFont);
             regretButton.setFont(buttonFont);
             resetButton.setFont(buttonFont);
@@ -679,6 +729,7 @@ public class Client {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameStart.interrupt();
+                game.setPassword(-1);
                 game = new Game(game.getPlayerBlue(), game.getPlayerRed());
                 gameStart = new GameStart();
                 gameStart.start();
@@ -710,7 +761,8 @@ public class Client {
             public void actionPerformed(ActionEvent e) {
                 int userOption = JOptionPane.showConfirmDialog(mainFrame, "确认退出游戏吗？");
                 if (userOption == JOptionPane.OK_OPTION) {
-                    GameStart.interrupted();
+                    gameStart.interrupt();
+                    game.setPassword(-1);
                     game = new Game();
                     initPaint();
                 }
@@ -813,6 +865,8 @@ public class Client {
                 updateMessageBox();
 
                 drawAnimals();
+
+                drawTime();
 
                 if (clicked) {
                     drawChoose();
