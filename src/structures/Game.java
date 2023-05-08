@@ -74,9 +74,16 @@ public class Game {
         // 在未分出胜负之前循环执行
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
+            step++;
+
+            System.out.println(step);
+
+            if (step % 2 == 1) {
+                messageInput("%d".formatted(step / 2 + 1), "round");
+            }
+
             Client.updateGamePaint(password);
 
-            step++;
             // 打印棋盘
             chessboard.printBoard();
 //          System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));

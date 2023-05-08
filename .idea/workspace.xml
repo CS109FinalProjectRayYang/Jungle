@@ -7,12 +7,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38bbf1cf-15e0-4496-beaf-75683c3ab46b" name="变更" comment="新建难度：CP_Monkey">
+    <list default="true" id="38bbf1cf-15e0-4496-beaf-75683c3ab46b" name="变更" comment="去除LoadImg中的无用输出">
+      <change afterPath="$PROJECT_DIR$/data/save/2023.5.8 YHL.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/img/Map1.png" beforeDir="false" afterPath="$PROJECT_DIR$/data/img/Map1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/img/Map2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/user/usernames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/user/usernames.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/network/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/structures/Chessboard_NEW.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Chessboard_NEW.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/structures/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/structures/players/CP_ShortSighted.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/players/CP_ShortSighted.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,38 +50,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/ProjectRepository/ForkProjects/Homework4&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/ProjectRepository/ForkProjects/Homework4",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="Push.Settings">
     <option name="SHOW_DETAILS_PANEL" value="false" />
   </component>
   <component name="RunManager" selected="应用程序.Client (3)">
     <configuration name="Client (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="network.Client" />
-      <module name="Jungle" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="network.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Client (2)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="network.Client" />
       <module name="Jungle" />
       <extension name="coverage">
@@ -105,7 +95,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Client (5)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Client (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="network.Client" />
       <module name="Jungle" />
       <extension name="coverage">
@@ -131,13 +121,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="network.Server" />
+      <module name="Jungle" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="network.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="应用程序.Client (3)" />
-        <item itemvalue="应用程序.Client (2)" />
-        <item itemvalue="应用程序.Client (5)" />
-        <item itemvalue="应用程序.Client (1)" />
         <item itemvalue="应用程序.Client" />
+        <item itemvalue="应用程序.Client (1)" />
+        <item itemvalue="应用程序.Server" />
+        <item itemvalue="应用程序.Client (4)" />
       </list>
     </recent_temporary>
   </component>
@@ -180,7 +183,12 @@
       <workItem from="1683300922199" duration="2715000" />
       <workItem from="1683359909485" duration="11183000" />
       <workItem from="1683381457206" duration="401000" />
-      <workItem from="1683381873527" duration="3333000" />
+      <workItem from="1683381873527" duration="6861000" />
+      <workItem from="1683474578663" duration="5577000" />
+      <workItem from="1683521336779" duration="152000" />
+      <workItem from="1683534959558" duration="6015000" />
+      <workItem from="1683545166489" duration="191000" />
+      <workItem from="1683545639529" duration="1385000" />
     </task>
     <task id="LOCAL-00001" summary="实现Client类与Game类之间的互联互通">
       <created>1682352940085</created>
@@ -259,7 +267,56 @@
       <option name="project" value="LOCAL" />
       <updated>1683171083529</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="重大胜利！实现图片覆盖">
+      <created>1683385376491</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1683385376491</updated>
+    </task>
+    <task id="LOCAL-00013" summary="无敌的量量忘记把chosenBlue和chosenRed两张图片上传上来了">
+      <created>1683390034219</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1683390034219</updated>
+    </task>
+    <task id="LOCAL-00014" summary="设置守方棋子灰度显示，优化线程排布">
+      <created>1683391603914</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1683391603914</updated>
+    </task>
+    <task id="LOCAL-00015" summary="优化图片绘制表现，减少频闪，加入计时功能">
+      <created>1683521469072</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1683521469072</updated>
+    </task>
+    <task id="LOCAL-00016" summary="更改计时为20秒&#10;完善网络联机的部分内容">
+      <created>1683544287339</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1683544287339</updated>
+    </task>
+    <task id="LOCAL-00017" summary="提升窗口绘制稳定性">
+      <created>1683545292460</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1683545292460</updated>
+    </task>
+    <task id="LOCAL-00018" summary="去除LoadImg中的无用输出">
+      <created>1683545347257</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1683545347257</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -277,6 +334,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="修订了一些Yang's_first_attempt中的一些bug&#10;添加了一个新类ChessWithPos&#10;添加了一些测试方法，写在Chessboard_NEW的psvm中" />
     <MESSAGE value="实现Client类与Game类之间的互联互通" />
     <MESSAGE value="实现游戏基本逻辑交互&#10;距离做出Demo只差把图标画上去" />
@@ -288,7 +346,14 @@
     <MESSAGE value="实现历史记录的保存与加载" />
     <MESSAGE value="修复棋盘重置与悔棋相关的bug" />
     <MESSAGE value="新建难度：CP_Monkey" />
-    <option name="LAST_COMMIT_MESSAGE" value="新建难度：CP_Monkey" />
+    <MESSAGE value="重大胜利！实现图片覆盖" />
+    <MESSAGE value="无敌的量量忘记把chosenBlue和chosenRed两张图片上传上来了" />
+    <MESSAGE value="设置守方棋子灰度显示，优化线程排布" />
+    <MESSAGE value="优化图片绘制表现，减少频闪，加入计时功能" />
+    <MESSAGE value="更改计时为20秒&#10;完善网络联机的部分内容" />
+    <MESSAGE value="提升窗口绘制稳定性" />
+    <MESSAGE value="去除LoadImg中的无用输出" />
+    <option name="LAST_COMMIT_MESSAGE" value="去除LoadImg中的无用输出" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -304,13 +369,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/network/Client.java</url>
-          <line>558</line>
+          <line>656</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/network/Client.java</url>
-          <line>232</line>
-          <option name="timeStamp" value="10" />
+          <line>716</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

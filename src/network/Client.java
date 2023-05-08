@@ -106,7 +106,7 @@ public class Client {
         JButton againstPlayerButton = new JButton("玩家VS玩家");
         JButton againstComputerButton = new JButton("玩家VS电脑");
         JButton backInitButton = new JButton("返回主界面");
-        JButton pauseButton = new JButton("暂停");
+        JButton themeButton = new JButton("主题");
         JButton regretButton = new JButton("悔棋");
         JButton resetButton = new JButton("重置");
         JButton saveButton = new JButton("保存");
@@ -129,6 +129,7 @@ public class Client {
         // source: https://www.zcool.com.cn/work/ZMzg3NjU3Njg=.html
         ImageIcon mapImgOrig = new ImageIcon("data/img/Map3.png");
         ImageIcon mapImg = new ImageIcon("data/img/Map3.png");
+        int mapImgIndex = 3;
         //标签
         JLabel mainFrameImgLabel = new JLabel(mainFrameImg);
         JLabel mapImgLabel = new JLabel(mapImg);
@@ -257,7 +258,7 @@ public class Client {
 
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(50);
             } catch (Exception ignore) {
 
             }
@@ -539,14 +540,14 @@ public class Client {
         private void loadGameButtonPanel() {
             timeLabel.setFont(new Font("楷体", Font.BOLD, 50));
 
-            pauseButton.setFont(buttonFont);
+            themeButton.setFont(buttonFont);
             regretButton.setFont(buttonFont);
             resetButton.setFont(buttonFont);
             saveButton.setFont(buttonFont);
             loadButton.setFont(buttonFont);
             backButton.setFont(buttonFont);
 
-            pauseButton.addActionListener(new pauseButtonListener());
+            themeButton.addActionListener(new themeButtonListener());
             regretButton.addActionListener(new regretButtonListener());
             resetButton.addActionListener(new resetButtonListener());
             saveButton.addActionListener(new saveButtonListener());
@@ -554,7 +555,7 @@ public class Client {
             backButton.addActionListener(new backButtonListener());
 
             gameButtonPanel.setLayout(new BoxLayout(gameButtonPanel, BoxLayout.Y_AXIS));
-            gameButtonPanel.add(pauseButton);
+            gameButtonPanel.add(themeButton);
             gameButtonPanel.add(regretButton);
             gameButtonPanel.add(resetButton);
             gameButtonPanel.add(saveButton);
@@ -710,9 +711,15 @@ public class Client {
                 initPaint();
             }
         }
-        private class pauseButtonListener implements ActionListener {
+        private class themeButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mapImgIndex = mapImgIndex % 3 + 1;
+                String path = "data/img/Map%d.png".formatted(mapImgIndex);
+                mapImgOrig = new ImageIcon(path);
+                mapImg.setImage(mapImgOrig.getImage().getScaledInstance(1000, 700, Image.SCALE_DEFAULT));
+
+                updateGamePaint();
             }
         }
         private class regretButtonListener implements ActionListener {
