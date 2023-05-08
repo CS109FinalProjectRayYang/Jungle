@@ -34,16 +34,22 @@ public class Client {
     static BufferedReader reader;
     static BufferedWriter writer;
 
-    public static void setNowPlayer(int nowPlayer) {
-        Client.nowPlayer = nowPlayer;
+    public static void setNowPlayer(int nowPlayer, int value) {
+        if (value == password) {
+            Client.nowPlayer = nowPlayer;
+        }
     }
 
-    public static void setPlayer(Player player) {
-        Client.player = player;
+    public static void setPlayer(Player player, int value) {
+        if (value == password) {
+            Client.player = player;
+        }
     }
 
-    public static void winPaint(int player) {
-        myGUI.winPaint(player);
+    public static void winPaint(int player, int value) {
+        if (value == password) {
+            myGUI.winPaint(player);
+        }
     }
 
     public static void updateGamePaint(int value) {

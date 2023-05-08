@@ -85,12 +85,12 @@ public class Game {
             Client.updateGamePaint(password);
 
             // 打印棋盘
-            chessboard.printBoard();
+//            chessboard.printBoard();
 //          System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
-            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
+//            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
 
-            Client.setNowPlayer(nowPlayer);
-            Client.setPlayer(playerMap.get(nowPlayer));
+            Client.setNowPlayer(nowPlayer, password);
+            Client.setPlayer(playerMap.get(nowPlayer), password);
             Client.updateGamePaint(password);
 
             int identity = playerMap.get(nowPlayer).getIdentity();
@@ -135,7 +135,7 @@ public class Game {
             }
 
             // 打印输入状态，转换攻方
-            System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
+//            System.out.printf("%s: %s\n", nameMap.get(nowPlayer), receiveCommand);
 
 
             nowPlayer = -nowPlayer;
@@ -143,16 +143,16 @@ public class Game {
 
 
         // 如果游戏结束
-        chessboard.printBoard();
+//        chessboard.printBoard();
         nowPlayer = 0;
 
-        Client.setNowPlayer(nowPlayer);
-        Client.winPaint(gameCondition);
+        Client.setNowPlayer(nowPlayer, password);
+        Client.winPaint(gameCondition, password);
 
         if (gameCondition != 0) {
-            System.out.printf("%s Wins!\n", nameMap.get(gameCondition));
+//            System.out.printf("%s Wins!\n", nameMap.get(gameCondition));
         } else {
-            System.out.println("Game Draw!");
+//            System.out.println("Game Draw!");
         }
     }
 
@@ -233,7 +233,7 @@ public class Game {
         } else {
             nowPlayer = -1;
         }
-        Client.setNowPlayer(nowPlayer);
+        Client.setNowPlayer(nowPlayer, password);
     }
     public void setPassword(int value) {
         password = value;
