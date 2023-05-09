@@ -25,10 +25,18 @@ public class Game {
     HashMap<Integer, Player> playerMap = new HashMap<>();
     ArrayList<String> messages = new ArrayList<>();
     public Game() {
+        playerBlue = new HumanPlayer();
+        playerRed = new HumanPlayer();
 
+        // 新建并初始化棋盘
+        chessboard = new Chessboard_NEW();
+        chessboard.initBoard();
     }
     public Game(Player playerBlue, Player playerRed) {
         setPlayer(playerBlue, playerRed);
+        // 新建并初始化棋盘
+        chessboard = new Chessboard_NEW();
+        chessboard.initBoard();
     }
     public void setPlayer(Player playerBlue, Player playerRed) {
         this.playerBlue = playerBlue;
@@ -57,45 +65,45 @@ public class Game {
         }
     }
     public void start() {
+
         nameMap.put(1, "playerBlue");
         nameMap.put(-1, "playerRed");
 
         playerMap.put(1, playerBlue);
         playerMap.put(-1, playerRed);
 
-        // 新建并初始化棋盘
-        chessboard = new Chessboard_NEW();
-        chessboard.initBoard();
+
+
 
         // 游戏开始
-        nowPlayer = 1;
 
-        System.out.println("Game Started!");
+//        System.out.println("Game Started!");
+//        System.out.println(playerBlue.getIdentity() + " " + playerRed.getIdentity());
+
+
         // 在未分出胜负之前循环执行
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
             step++;
 
-            System.out.println(step);
+//            System.out.println(step);
 
             if (step % 2 == 1) {
                 messageInput("%d".formatted(step / 2 + 1), "round");
             }
 
-            Client.updateGamePaint(password);
-
             // 打印棋盘
 //            chessboard.printBoard();
-//          System.out.printf("final value: %.2f\n", ComputerPlayer.evaluateMap(chessboard, step / 2));
-//            System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
 
             Client.setNowPlayer(nowPlayer, password);
             Client.setPlayer(playerMap.get(nowPlayer), password);
             Client.updateGamePaint(password);
 
-            int identity = playerMap.get(nowPlayer).getIdentity();
+            int identity = getPlayer().getIdentity();
 
             if (identity == 1) {
+//                System.out.println("Client");
+//                System.out.println(getPlayer().getIdentity());
                 // 本地客户端回合，开放输入端口，等待Client输入
                 inputted = false;
                 countWaitingTime = 0;
@@ -121,6 +129,7 @@ public class Game {
                     }
                 }
             } else if (identity == 2) {
+//                System.out.println("Computer");
                 // 电脑回合，等待电脑计算
                 playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
             } else if (identity == 3) {
@@ -147,6 +156,7 @@ public class Game {
         nowPlayer = 0;
 
         Client.setNowPlayer(nowPlayer, password);
+        Client.updateGamePaint(password);
         Client.winPaint(gameCondition, password);
 
         if (gameCondition != 0) {
@@ -204,14 +214,16 @@ public class Game {
     }
     public void buildFromHistory(History history) {
         this.history = history;
+        chessboard = new Chessboard_NEW();
         chessboard.initBoard();
         for (int i = 1; i <= history.getSize(); i++) {
             int[][] nowStep = history.getHistory(i);
             chessboard.moveChess(nowStep[0], nowStep[1]);
+            nowPlayer = -chessboard.getChess(nowStep[1]).getTeam();
         }
-        chessboard.printBoard();
-        updateNowPlayer();
-        System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
+//        chessboard.printBoard();
+//        System.out.println("nowPlayer" + nowPlayer);
+//        System.out.printf("Waiting for %s...\n", nameMap.get(nowPlayer));
     }
 
     public void setHistorySize(int historySize) {

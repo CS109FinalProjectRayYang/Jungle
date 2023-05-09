@@ -79,7 +79,6 @@ public class Client {
     }
     private static class GUI {
         LoginGUI loginGUI;
-        Repaint painter;
         //当前页面
         // 0 : 无页面
         // 1 : 主页面
@@ -104,7 +103,6 @@ public class Client {
         JPanel chooseColorPanel = new JPanel();
         JPanel messagePanel = new JPanel();
         JPanel messageButtonPanel = new JPanel();
-        JPanel mapDrawPanel = new MyDrawPanel();
         //按钮
         JButton localGameButton = new JButton("本地游戏");
         JButton onlineGameButton = new JButton("联机对战");
@@ -264,7 +262,7 @@ public class Client {
 
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(100);
             } catch (Exception ignore) {
 
             }
@@ -446,7 +444,7 @@ public class Client {
                     if (page == 4) {
                         int[] clickPos = getClickPos(e);
                         if (!Chess.isOutOfBound(clickPos)) {
-                            System.out.printf("(%d, %d) Clicked.\n", clickPos[0], clickPos[1]);
+//                            System.out.printf("(%d, %d) Clicked.\n", clickPos[0], clickPos[1]);
                             if (!game.getInputted() && player.getIdentity() == 1) {
                                 click(clickPos);
                             }
@@ -468,10 +466,10 @@ public class Client {
                     legalMove = chess.getLegalMove(clickPos);
                     clicked = true;
                     for (int[] move : legalMove) {
-                        System.out.printf("(%d, %d)\n", move[0], move[1]);
+//                        System.out.printf("(%d, %d)\n", move[0], move[1]);
                     }
                 } else {
-                    System.out.println("Illegal Click");
+//                    System.out.println("Illegal Click");
                 }
             } else {
                 // 如果有棋子被选择
@@ -487,7 +485,7 @@ public class Client {
                 if (isLegalMove) {
                     game.input(clickedPos, clickPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(clickedPos).getChessName(), clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
                 } else {
-                    System.out.println("Illegal Click");
+//                    System.out.println("Illegal Click");
                 }
 
                 // 复位
@@ -619,6 +617,7 @@ public class Client {
         }
 
         private void loadGame() {
+            game.setPassword(-1);
             game = new Game();
             Player counterPlayer = new HumanPlayer();
             if (counterPlayerMode == 1) {
@@ -836,21 +835,42 @@ public class Client {
                     BufferedReader fHistoryReader = new BufferedReader(new FileReader(fHistory));
                     int size = Integer.parseInt(fHistoryReader.readLine());
                     int[][][] history = new int[3000][2][2];
+                    Chessboard_NEW testBoard = new Chessboard_NEW();
+                    testBoard.initBoard();
                     for (int i = 1; i <= size; i++) {
                         String line = fHistoryReader.readLine();
                         String[] elements = line.split(" ");
-                        history[i][0][0] = Integer.parseInt(elements[0]);
-                        history[i][0][1] = Integer.parseInt(elements[1]);
-                        history[i][1][0] = Integer.parseInt(elements[2]);
-                        history[i][1][1] = Integer.parseInt(elements[3]);
+
+                        int[] testPos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
+                        int[] testNextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
+                        Chess testChess = testBoard.getChess(testPos);
+                        if (testChess == null) {
+                            // 当前位置无棋子
+                            throw new Exception();
+                        } else {
+                            ArrayList<int[]> legalMoves = testChess.getLegalMove(testPos);
+                            boolean isLegalMove = false;
+                            for (int[] legalMove : legalMoves) {
+                                if (legalMove[0] == testNextPos[0] && legalMove[1] == testNextPos[1]) {
+                                    isLegalMove = true;
+                                }
+                            }
+                            if (!isLegalMove) {
+                                // 棋子移动不合法
+                                throw new Exception();
+                            }
+                        }
+                        history[i][0] = testPos;
+                        history[i][1] = testNextPos;
+                        testBoard.moveChess(testPos, testNextPos);
                     }
                     History h = new History(history, size);
+                    game.setPassword(-1);
+                    game = new Game(game.getPlayerBlue(), game.getPlayerRed());
                     game.buildFromHistory(h);
-                } catch (FileNotFoundException e) {
-                    System.out.println("历史文件读取错误");
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    gamePaint();
+                } catch (Exception ignore) {
+                    JOptionPane.showMessageDialog(mainFrame, "文件已损坏");
                 }
 
             }
@@ -863,12 +883,7 @@ public class Client {
 
 
 
-        class MyDrawPanel extends JPanel {
-            public void paintComponent(Graphics g) {
-                Image mapImgDraw = mapImg.getImage();
-                g.drawImage(mapImgDraw, 0, 0, this);
-            }
-        }
+
 
         static class GameStart extends Thread {
             @Override
@@ -879,27 +894,6 @@ public class Client {
                     throw new RuntimeException(e);
                 }
                 game.start();
-            }
-        }
-        class Repaint extends Thread {
-            public void run() {
-                mainFramePanel.removeAll();
-
-                updateMessageBox();
-
-                drawAnimals();
-
-                drawTime();
-
-                if (clicked) {
-                    drawChoose();
-                }
-
-                mainFramePanel.add(mapImgLabel);
-                mainFramePanel.add(gameButtonPanel);
-                mainFramePanel.add(messagePanel);
-
-                mainFrame.repaint();
             }
         }
 

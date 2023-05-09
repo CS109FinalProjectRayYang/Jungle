@@ -166,7 +166,7 @@ public class ComputerPlayer extends Player{
             } else {
                 denPos = blueDenPos;
             }
-            double value = team * (-30 + pow(getDist(atkPos, denPos), 0.7) * 4);
+            double value = team * (-30 + pow(getDist(atkPos, denPos), 0.5) * 8);
             if (countLoop > 100) {
                 value *= 3;
             }
@@ -309,7 +309,7 @@ value值表：
 
     进攻价值:
     // 场上进攻型棋子为除大象外编号最大的两个棋子，若棋子总数小于等于3，则为最大的一个棋子
-    -+ 距离敌方巢穴的距离 ^ 0.9 * 3.2
+    -+ 距离敌方巢穴的距离 ^ 0.9 * 5.2
 
     防守价值:
     // 敌方进攻型棋子: 跨过半场的敌方棋子
