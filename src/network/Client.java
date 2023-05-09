@@ -3,6 +3,7 @@ package network;
 import structures.Chessboard_NEW;
 import structures.Game;
 import structures.History;
+import structures.Observer;
 import structures.chesses.Chess;
 import structures.players.*;
 
@@ -33,6 +34,10 @@ public class Client {
     static Game game = new Game();
     static BufferedReader reader;
     static BufferedWriter writer;
+    static History playbackHistory = new History();
+    static Observer observer;
+    static int observerStep = 1;
+    static Chessboard_NEW observerChessboard;
 
     public static void setNowPlayer(int nowPlayer, int value) {
         if (value == password) {
@@ -103,6 +108,7 @@ public class Client {
         JPanel chooseColorPanel = new JPanel();
         JPanel messagePanel = new JPanel();
         JPanel messageButtonPanel = new JPanel();
+        JPanel playbackButtonPanel = new JPanel();
         //按钮
         JButton localGameButton = new JButton("本地游戏");
         JButton onlineGameButton = new JButton("联机对战");
@@ -123,7 +129,12 @@ public class Client {
         JButton chooseRedButton = new JButton("后手");
         JButton sendMessageButton = new JButton("发送");
         JButton clearMessageButton = new JButton("清空");
+        JButton nextStepButton = new JButton("前进");
+        JButton lastStepButton = new JButton("后退");
+        JButton jumpStepButton = new JButton("跳转");
+        JButton playbackButton = new JButton("历史记录");
         //文本框
+        JTextField jumpStepBox = new JTextField(10);
         JTextArea messageBox = new JTextArea(35, 40);
         JTextField inputBox = new JTextField(20);
         JScrollPane messageBoxScroller = new JScrollPane(messageBox);
@@ -172,6 +183,8 @@ public class Client {
             loadChooseColorPanel();
 
             loadMessagePanel();
+
+            loadPlaybackButtonPanel();
 
             loadImg();
 
@@ -223,6 +236,17 @@ public class Client {
         }
 
 
+        private void playbackPaint() {
+            mainFramePanel.removeAll();
+
+            mainFramePanel.add(mapImgLabel);
+            mainFramePanel.add(playbackButtonPanel);
+            mainFramePanel.add(messagePanel);
+
+            mainFrame.setLocation(50, 30);
+            mainFrame.pack();
+        }
+
         private void gamePaint() {
             page = 4;
 
@@ -266,6 +290,57 @@ public class Client {
             } catch (Exception ignore) {
 
             }
+        }
+
+        private void observerPaint() {
+            mainFramePanel.removeAll();
+
+            mainFramePanel.add(mapImgLabel);
+            mainFramePanel.add(playbackButtonPanel);
+
+            mainFrame.pack();
+        }
+
+        private void updateObserverPaint() {
+
+            mainFramePanel.removeAll();
+
+            drawAnimalsByObserver();
+
+            mainFramePanel.add(mapImgLabel);
+            mainFramePanel.add(playbackButtonPanel);
+
+            mainFrame.repaint();
+
+            try {
+                Thread.sleep(100);
+            } catch (Exception ignore) {
+
+            }
+        }
+
+
+        private void drawAnimalsByObserver() {
+            mainFramePanel.setLayout(null);
+            Chessboard_NEW chessboard = observer.getChessboard();
+            for (int i = 1; i <= Chessboard_NEW.getSizeY(); i++) {
+                for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
+                    Chess chess = chessboard.getChess(j, i);
+                    if (chess != null) {
+                        int posX = 50 + 80 * j;
+                        int posY = 45 + 80 * i;
+
+                        int team = chess.getTeam();
+                        if (team == -1) team = 0;
+                        JLabel imgLabel = imgLabels[team][chess.getID()];
+
+                        imgLabel.setBounds(posX, posY, 116, 80);
+
+                        mainFramePanel.add(imgLabel);
+                    }
+                }
+            }
+            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
 
         private void drawAnimals() {
@@ -507,16 +582,30 @@ public class Client {
             // 设置 本地游戏、在线游戏、退出游戏 这三个按钮的基本属性，并加入监听
             localGameButton.setFont(buttonFont);
             onlineGameButton.setFont(buttonFont);
+            playbackButton.setFont(buttonFont);
             exitGameButton.setFont(buttonFont);
 
             localGameButton.addActionListener(new localGameButtonListener());
             onlineGameButton.addActionListener(new onlineGameButtonListener());
             exitGameButton.addActionListener(new exitGameButtonListener());
+            playbackButton.addActionListener(e -> {
+                observer = null;
+                getHistory();
+                if (observer != null) {
+                    try {
+                        observer.setChessboard(1);
+                    } catch (Exception ignore) {
+
+                    }
+                    observerPaint();
+                }
+            });
 
             // 将三个按钮依次加入初始界面按钮面板中
             initButtonPanel.setLayout(new BoxLayout(initButtonPanel, BoxLayout.Y_AXIS));
             initButtonPanel.add(localGameButton);
             initButtonPanel.add(onlineGameButton);
+            initButtonPanel.add(playbackButton);
             initButtonPanel.add(Box.createVerticalGlue()); // 退出游戏按钮上方做一定分隔
             initButtonPanel.add(exitGameButton);
         }
@@ -661,6 +750,70 @@ public class Client {
             messagePanel.add(messageButtonPanel);
         }
 
+        private void loadPlaybackButtonPanel() {
+            nextStepButton.setFont(buttonFont);
+            lastStepButton.setFont(buttonFont);
+            jumpStepButton.setFont(buttonFont);
+            jumpStepBox.setFont(buttonFont);
+
+            nextStepButton.addActionListener(e -> {
+                if (observerStep < observer.getSize()) {
+                    observerStep++;
+                    jumpStepBox.setText("%d".formatted(observerStep));
+                    try {
+                        observer.setChessboard(observerStep);
+                    } catch (Exception ignore) {
+                    }
+                    observerChessboard = observer.getChessboard();
+                    updateObserverPaint();
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "超过最大页数");
+                }
+            });
+            lastStepButton.addActionListener(e -> {
+                if (observerStep > 0) {
+                    observerStep--;
+                    jumpStepBox.setText("%d".formatted(observerStep));
+                    try {
+                        observer.setChessboard(observerStep);
+                    } catch (Exception ignore) {
+
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "超过最小页数");
+                }
+                observerChessboard = observer.getChessboard();
+                updateObserverPaint();
+            });
+            jumpStepButton.addActionListener(e -> {
+                int jumpStep = Integer.parseInt(jumpStepBox.getText());
+                if (jumpStep < 1) {
+                    jumpStep = 1;
+                    JOptionPane.showMessageDialog(mainFrame, "超过最小页数");
+                }
+                if (jumpStep > observer.getSize()) {
+                    jumpStep = observer.getSize();
+                    JOptionPane.showMessageDialog(mainFrame, "超过最大页数");
+                }
+                jumpStepBox.setText("%d".formatted(jumpStep));
+                observerStep = jumpStep;
+                try {
+                    observer.setChessboard(observerStep);
+                } catch (Exception ignore) {
+
+                }
+                observerChessboard = observer.getChessboard();
+                updateObserverPaint();
+            });
+
+            playbackButtonPanel.setLayout(new BoxLayout(playbackButtonPanel, BoxLayout.Y_AXIS));
+            playbackButtonPanel.add(nextStepButton);
+            playbackButtonPanel.add(lastStepButton);
+            playbackButtonPanel.add(jumpStepBox);
+            playbackButtonPanel.add(jumpStepButton);
+            playbackButtonPanel.add(Box.createVerticalGlue());
+            playbackButtonPanel.add(backInitButton);
+        }
 
 
 
@@ -822,6 +975,55 @@ public class Client {
                     throw new RuntimeException(e);
                 }
 
+            }
+        }
+
+        private void getHistory() {
+            JFileChooser historyChooser = new JFileChooser("data/save/");
+            historyChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int flag = historyChooser.showOpenDialog(mainFrame);
+            if (flag == JFileChooser.APPROVE_OPTION) {
+                File fHistory = historyChooser.getSelectedFile();
+                try {
+                    BufferedReader fHistoryReader = new BufferedReader(new FileReader(fHistory));
+                    int size = Integer.parseInt(fHistoryReader.readLine());
+                    isLegalHistory(fHistoryReader, size);
+                    playbackHistory = new History(fHistory);
+                    observer = new Observer(playbackHistory);
+                } catch (Exception ignore) {
+                    JOptionPane.showMessageDialog(mainFrame, "文件已损坏");
+                }
+            }
+
+        }
+
+        private void isLegalHistory(BufferedReader fHistoryReader, int size) throws Exception {
+            Chessboard_NEW testBoard = new Chessboard_NEW();
+            testBoard.initBoard();
+            for (int i = 1; i <= size; i++) {
+                String line = fHistoryReader.readLine();
+                String[] elements = line.split(" ");
+
+                int[] testPos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
+                int[] testNextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
+                Chess testChess = testBoard.getChess(testPos);
+                if (testChess == null) {
+                    // 当前位置无棋子
+                    throw new Exception();
+                } else {
+                    ArrayList<int[]> legalMoves = testChess.getLegalMove(testPos);
+                    boolean isLegalMove = false;
+                    for (int[] legalMove : legalMoves) {
+                        if (legalMove[0] == testNextPos[0] && legalMove[1] == testNextPos[1]) {
+                            isLegalMove = true;
+                        }
+                    }
+                    if (!isLegalMove) {
+                        // 棋子移动不合法
+                        throw new Exception();
+                    }
+                }
+                testBoard.moveChess(testPos, testNextPos);
             }
         }
 
