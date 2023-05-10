@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Server {
     static ArrayList<Room> rooms = new ArrayList<>();
     static int roomNum = 0;
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
 
         ServerSocket serverSocket = new ServerSocket(8080);
         System.out.println("server is running...");
@@ -66,11 +66,28 @@ public class Server {
                         case "exitRoom":
                             exitRoom(commands[1], commands[2]);
                             break;
+                        case "getUserData":
+                            getUserData(commands[1]);
+                            break;
                     }
                 } catch (IOException e) {
                     System.out.println(socket.getRemoteSocketAddress()+" disconnected.");
                     break;
                 }
+            }
+        }
+        private void getUserData(String username) {
+            String path = "data/user/%s/%s.txt".formatted(username, username);
+            ArrayList<String> lines = readFile(path);
+
+            try {
+                for (String line : lines) {
+                    writer.write(line);
+                    writer.newLine();
+                    writer.flush();
+                }
+            } catch (Exception ignore) {
+
             }
         }
         private void register(String username, String password) throws IOException {

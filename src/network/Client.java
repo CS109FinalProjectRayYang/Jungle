@@ -38,6 +38,7 @@ public class Client {
     static Observer observer;
     static int observerStep = 1;
     static Chessboard_NEW observerChessboard;
+    static String username;
 
     public static void setNowPlayer(int nowPlayer, int value) {
         if (value == password) {
@@ -109,6 +110,9 @@ public class Client {
         JPanel messagePanel = new JPanel();
         JPanel messageButtonPanel = new JPanel();
         JPanel playbackButtonPanel = new JPanel();
+        JPanel onlineButtonPanel = new JPanel();
+        JPanel onlinePage = new JPanel();
+
         //按钮
         JButton localGameButton = new JButton("本地游戏");
         JButton onlineGameButton = new JButton("联机对战");
@@ -133,11 +137,18 @@ public class Client {
         JButton lastStepButton = new JButton("后退");
         JButton jumpStepButton = new JButton("跳转");
         JButton playbackButton = new JButton("历史记录");
+        JButton personalHomepage = new JButton("个人页面");
+        JButton findGameButton = new JButton("联机对战");
+        JButton createRoom = new JButton("创建房间");
+        JButton enterRoom = new JButton("加入房间");
         //文本框
         JTextField jumpStepBox = new JTextField(10);
         JTextArea messageBox = new JTextArea(35, 40);
         JTextField inputBox = new JTextField(20);
+        JTextField roomNameBox = new JTextField(15);
+        JList<String> roomList = new JList<>();
         JScrollPane messageBoxScroller = new JScrollPane(messageBox);
+        JScrollPane roomListScroller = new JScrollPane(roomList);
         //图片
         ImageIcon mainFrameImgOrig = new ImageIcon("data/img/Jungle.jpg");
         ImageIcon mainFrameImg = new ImageIcon("data/img/Jungle.jpg");
@@ -151,6 +162,9 @@ public class Client {
         JLabel chooseDifficultyLabel = new JLabel("难度：");
         JLabel chooseColorLabel = new JLabel("行动：");
         JLabel timeLabel = new JLabel();
+        JLabel usernameLabel = new JLabel();
+        JLabel gameNumberLabel = new JLabel();
+        JLabel winningRateLabel = new JLabel();
         JLabel[][] imgLabels = new JLabel[2][9];
         JLabel[][] imgLabelsGrey = new JLabel[2][9];
         //字体
@@ -1102,7 +1116,7 @@ public class Client {
 
         private void onlineGame() {
             try {
-                String ip = "10.27.40.151";
+                String ip = "10.13.249.60";
                 Socket socket = new Socket(ip, 8080);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -1139,6 +1153,7 @@ public class Client {
                             case "LoginSuccessfully" -> {
                                 JOptionPane.showMessageDialog(loginFrame, "登录成功");
                                 loginFrame.setVisible(false);
+                                username = usernameField.getText();
                                 login();
                             }
                             case "PasswordError" -> JOptionPane.showMessageDialog(loginFrame, "登陆失败：密码错误");
@@ -1195,8 +1210,123 @@ public class Client {
 
         }
         private void login() {
-//            loginPaint();
+            try {
+                loadLogin();
+            } catch (Exception ignore) {
+                initPaint();
+                JOptionPane.showMessageDialog(mainFrame, "无法连接至服务器");
+            }
 
+        }
+        private void loadLogin() throws Exception{
+
+            usernameLabel.setFont(buttonFont);
+            gameNumberLabel.setFont(buttonFont);
+            winningRateLabel.setFont(buttonFont);
+
+            writer.write("getUserData %s".formatted(username));
+            writer.newLine();
+            writer.flush();
+
+            String username = reader.readLine();
+            String password = reader.readLine();
+            int gameNum = Integer.parseInt(reader.readLine());
+            int winNum = Integer.parseInt(reader.readLine());
+
+            usernameLabel.setText("用户名：%s".formatted(username));
+            gameNumberLabel.setText("对局数：%d".formatted(gameNum));
+            if (gameNum != 0) {
+                winningRateLabel.setText("胜率：%.2f".formatted((double) winNum / gameNum));
+            } else {
+                winningRateLabel.setText("胜率：暂无胜率");
+            }
+
+            personalHomepage.setFont(buttonFont);
+            findGameButton.setFont(buttonFont);
+
+//            personalHomepage.setContentAreaFilled(false);
+
+//            findGameButton.setContentAreaFilled(false);
+
+
+            onlineButtonPanel.removeAll();
+            onlineButtonPanel.setLayout(new BoxLayout(onlineButtonPanel, BoxLayout.Y_AXIS));
+            onlineButtonPanel.add(personalHomepage);
+            onlineButtonPanel.add(findGameButton);
+            onlineButtonPanel.add(Box.createVerticalGlue());
+            onlineButtonPanel.add(backInitButton);
+
+            personalHomepage.addActionListener(e -> {
+                personalHomepagePaint();
+            });
+            findGameButton.addActionListener(e -> {
+                findGamePaint();
+            });
+
+            personalHomepagePaint();
+
+        }
+        private void personalHomepagePaint() {
+            mainFramePanel.removeAll();
+
+            onlinePage.removeAll();
+            onlinePage.setSize(600, 500);
+            onlinePage.setLayout(new BoxLayout(onlinePage, BoxLayout.Y_AXIS));
+
+            onlinePage.add(usernameLabel);
+            onlinePage.add(gameNumberLabel);
+            onlinePage.add(winningRateLabel);
+            onlinePage.add(Box.createVerticalGlue());
+
+            mainFramePanel.add(onlineButtonPanel);
+            mainFramePanel.add(onlinePage);
+
+            mainFrame.setSize(700, 500);
+            mainFrame.repaint();
+        }
+        private void findGamePaint() {
+            mainFramePanel.removeAll();
+
+            onlinePage.removeAll();
+            onlinePage.setSize(600, 500);
+            onlinePage.setLayout(null);
+
+            String[] listData = new String[3];
+            // TODO: 获取房间数据
+            listData[0] = "Test 1";
+            listData[1] = "Test 2";
+            roomList.setListData(listData);
+
+            roomListScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            roomListScroller.setBounds(10, 10, 400, 400);
+
+            enterRoom.setFont(buttonFont);
+            createRoom.setFont(buttonFont);
+
+            enterRoom.setBounds(420, 10, 130, 40);
+            createRoom.setBounds(420, 60, 130, 40);
+
+            enterRoom.addActionListener(e -> {
+                int i = roomList.getSelectedIndex();
+                if (i != -1) {
+                    JOptionPane.showConfirmDialog(mainFrame, "是否加入该房间？");
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "请选择要加入的房间");
+                }
+            });
+            createRoom.addActionListener(e -> {
+
+            });
+
+            onlinePage.add(roomListScroller);
+            onlinePage.add(enterRoom);
+            onlinePage.add(createRoom);
+
+            mainFramePanel.add(onlineButtonPanel);
+            mainFramePanel.add(onlinePage);
+
+            mainFrame.setSize(700, 500);
+            mainFrame.repaint();
         }
     }
 }
