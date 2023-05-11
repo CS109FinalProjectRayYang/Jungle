@@ -13,24 +13,14 @@ public class Room {
     public Room(int roomID, String roomName, String username, Socket socket) {
         this.roomID = roomID;
         this.roomName = roomName;
-        if (Math.random() * 2 > 1) {
-            userBlue = username;
-            socketBlue = socket;
-        } else {
-            userRed = username;
-            socketRed = socket;
-        }
+        userBlue = username;
+        socketBlue = socket;
         userNum = 1;
     }
     public void joinRoom(String username, Socket socket) {
         if (!isFull()) {
-            if (userRed == null) {
-                userBlue = username;
-                socketBlue = socket;
-            } else {
-                userRed = username;
-                socketRed = socket;
-            }
+            userRed = username;
+            socketRed = socket;
             userNum = 2;
         }
     }
@@ -69,7 +59,29 @@ public class Room {
         }
     }
 
+    public void beginGame() {
+        Game game = new Game(this);
+        try {
+            game.run();
+        } catch (Exception ignore) {
+
+        }
+    }
+    public void removeAll() {
+        userNum = 0;
+        try {
+            socketBlue.close();
+            socketRed.close();
+        } catch (Exception ignore) {
+
+        }
+    }
+
     private class Game extends Thread {
+        Room room;
+        public Game(Room room) {
+            this.room = room;
+        }
         public void run() {
             InputStream input;
             OutputStream output;
@@ -117,7 +129,7 @@ public class Room {
                 }
                 chessboard.save();
             } catch (IOException e) {
-                System.out.println("Game is interrupted by illegal exit.");
+                room.removeAll();
                 interrupt();
             }
         }

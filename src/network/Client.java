@@ -1,12 +1,12 @@
 package network;
 
-import structures.Chessboard_NEW;
-import structures.Game;
-import structures.History;
-import structures.Observer;
+import structures.*;
 import structures.chesses.Chess;
 import structures.players.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -39,6 +39,7 @@ public class Client {
     static int observerStep = 1;
     static Chessboard_NEW observerChessboard;
     static String username;
+    static String[] listData;
 
     public static void setNowPlayer(int nowPlayer, int value) {
         if (value == password) {
@@ -79,6 +80,7 @@ public class Client {
             throw new RuntimeException(e);
         }
 
+        PlaySound.run();
         myGUI = new GUI();
         myGUI.run();
 
@@ -1117,6 +1119,7 @@ public class Client {
         private void onlineGame() {
             try {
                 String ip = "10.13.249.60";
+                ip = "10.27.40.151";
                 Socket socket = new Socket(ip, 8080);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -1291,10 +1294,20 @@ public class Client {
             onlinePage.setSize(600, 500);
             onlinePage.setLayout(null);
 
-            String[] listData = new String[3];
-            // TODO: 获取房间数据
-            listData[0] = "Test 1";
-            listData[1] = "Test 2";
+            listData = null;
+            try {
+                writer.write("searchRoom");
+                writer.newLine();
+                writer.flush();
+                int roomNum = Integer.parseInt(reader.readLine());
+                listData = new String[roomNum + 1];
+                listData[0] = "%10s%20s%20s".formatted("Room ID", "Room Name", "Username");
+                for (int i = 1; i <= roomNum; i++) {
+                    listData[i] = reader.readLine();
+                }
+            } catch (Exception ignore) {
+
+            }
             roomList.setListData(listData);
 
             roomListScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1308,14 +1321,29 @@ public class Client {
 
             enterRoom.addActionListener(e -> {
                 int i = roomList.getSelectedIndex();
-                if (i != -1) {
-                    JOptionPane.showConfirmDialog(mainFrame, "是否加入该房间？");
+                if (i > 0) {
+                    int flag = JOptionPane.showConfirmDialog(mainFrame, "是否加入该房间？");
+                    if (flag == JOptionPane.OK_OPTION) {
+                        try {
+                            writer.write("joinRoom %s %d".formatted(username, i));
+                        } catch (Exception ignore) {
+
+                        }
+                    }
                 } else {
                     JOptionPane.showMessageDialog(mainFrame, "请选择要加入的房间");
                 }
             });
             createRoom.addActionListener(e -> {
-
+                String roomName = JOptionPane.showInputDialog(mainFrame, "房间名:");
+                try {
+                    writer.write("newRoom %s %s".formatted(username, roomName));
+                    writer.newLine();
+                    writer.flush();
+                } catch (Exception ignore) {
+                    JOptionPane.showMessageDialog(mainFrame, "服务器连接错误");
+                    initPaint();
+                }
             });
 
             onlinePage.add(roomListScroller);

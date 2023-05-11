@@ -135,17 +135,30 @@ public class Server {
             }
         }
         private void searchRoom() throws IOException {
-            sendMessage(String.valueOf(roomNum));
+            int count = 0;
             for (Room room : rooms) {
                 if (room.isWaiting()) {
-                    sendMessage("%d %s %s".formatted(room.getRoomID(), room.getRoomName(), room.getRoomMate()));
+                    count++;
+                }
+            }
+            sendMessage(String.valueOf(count));
+            for (Room room : rooms) {
+                if (room.isWaiting()) {
+                    sendMessage("%10d %20s %20s".formatted(room.getRoomID(), room.getRoomName(), room.getRoomMate()));
                 }
             }
         }
-        private void joinRoom(String username, String roomID) throws IOException {
+        private void joinRoom(String username, String countNum) throws IOException {
             String command = reader.readLine();
             String[] commands = command.split(" ");
-            rooms.get(Integer.parseInt(commands[2])).joinRoom(commands[1], socket);
+            int count = 0;
+            for (Room room : rooms) {
+                count++;
+                if (count == Integer.parseInt(countNum)) {
+                    room.joinRoom(commands[1], socket);
+
+                }
+            }
         }
         private void exitRoom(String username, String roomID) {
             // TODO: Complete the method exitRoom.
@@ -235,6 +248,11 @@ public class Server {
             writer.write(message);
             writer.newLine();
             writer.flush();
+        }
+    }
+    class GameHolding extends Thread {
+        public GameHolding(Room room) {
+
         }
     }
 }
