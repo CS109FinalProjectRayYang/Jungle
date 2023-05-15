@@ -80,10 +80,17 @@ public class Client {
             throw new RuntimeException(e);
         }
 
-        PlaySound.run();
+
+
         myGUI = new GUI();
         myGUI.run();
 
+    }
+    private static class TPlayMusic extends Thread {
+        @Override
+        public void run() {
+            PlaySound.run();
+        }
     }
     private static class GUI {
         LoginGUI loginGUI;
@@ -575,6 +582,14 @@ public class Client {
                 }
                 if (isLegalMove) {
                     game.input(clickedPos, clickPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(clickedPos).getChessName(), clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
+                    if (game.isNetworkGame()) {
+                        try {
+                            writer.write("%d %d %d %d Finished".formatted(clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
+                            writer.newLine();
+                            writer.flush();
+                        } catch (Exception ignore) {
+                        }
+                    }
                 } else {
 //                    System.out.println("Illegal Click");
                 }
@@ -1119,15 +1134,18 @@ public class Client {
         private void onlineGame() {
             try {
                 String ip = "10.13.249.60";
-                ip = "10.27.40.151";
+                ip = "127.0.0.1";
+
                 Socket socket = new Socket(ip, 8080);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
                 writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
                 loginGUI = new LoginGUI();
                 loginGUI.run();
-            } catch (IOException ignore) {
+                closeWaitingPaint();
+            } catch (Exception ignore) {
                 System.out.println("Server Error");
                 JOptionPane.showMessageDialog(mainFrame, "无法连接至服务器");
+                closeWaitingPaint();
             }
         }
 
@@ -1326,8 +1344,19 @@ public class Client {
                     if (flag == JOptionPane.OK_OPTION) {
                         try {
                             writer.write("joinRoom %s %d".formatted(username, i));
+                            writer.newLine();
+                            writer.flush();
+                            String command = reader.readLine();
+                            if (command.equals("joinRoomSuccessfully")) {
+                                game = new Game(new NetworkPlayer(), new HumanPlayer());
+                                gameStart = new GameStart();
+                                gameStart.start();
+                                gamePaint();
+                            } else {
+                                throw new Exception();
+                            }
                         } catch (Exception ignore) {
-
+                            JOptionPane.showMessageDialog(mainFrame, "服务器连接错误");
                         }
                     }
                 } else {
@@ -1340,6 +1369,15 @@ public class Client {
                     writer.write("newRoom %s %s".formatted(username, roomName));
                     writer.newLine();
                     writer.flush();
+//                    waitingPaint("等待加入...");
+                    findGamePaint();
+                    String command = reader.readLine();
+                    if (command.equals("gameBegin")) {
+                        game = new Game(new HumanPlayer(), new NetworkPlayer());
+                        gameStart = new GameStart();
+                        gameStart.start();
+                        gamePaint();
+                    }
                 } catch (Exception ignore) {
                     JOptionPane.showMessageDialog(mainFrame, "服务器连接错误");
                     initPaint();
@@ -1355,6 +1393,39 @@ public class Client {
 
             mainFrame.setSize(700, 500);
             mainFrame.repaint();
+        }
+        JFrame waitingFrame = new JFrame();
+        private void waitingPaint(String content) {
+            JLabel waitingLabel = new JLabel();
+            JPanel waitingPanel = new JPanel();
+            waitingLabel.setFont(buttonFont);
+            waitingLabel.setText(content);
+
+            waitingPanel.add(waitingLabel);
+
+            waitingFrame.setContentPane(waitingPanel);
+            waitingFrame.setResizable(false);
+            waitingFrame.setSize(300, 150);
+            waitingFrame.setLocation(500, 300);
+            waitingFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            waitingFrame.setVisible(true);
+        }
+        private  void closeWaitingPaint() {
+            waitingFrame.setVisible(false);
+        }
+        class TReceive extends Thread {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        String command = reader.readLine();
+                        game.input(command);
+                    }
+                } catch (Exception ignore) {
+
+                }
+
+            }
         }
     }
 }

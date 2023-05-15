@@ -10,6 +10,8 @@ public class Room {
     String userBlue = null;
     String userRed = null;
     Socket socketBlue, socketRed;
+    boolean isInputted = false;
+    String command;
     public Room(int roomID, String roomName, String username, Socket socket) {
         this.roomID = roomID;
         this.roomName = roomName;
@@ -25,14 +27,26 @@ public class Room {
         }
     }
     public void exitRoom(String username) {
-        if (userRed.equals(username)) {
-            userRed = null;
-            socketRed = null;
-        } else {
-            userBlue = null;
-            socketBlue = null;
+        userNum = 0;
+    }
+    public void checkRoom() {
+        boolean flag = true;
+        if (socketBlue != null) {
+            try{
+                socketBlue.sendUrgentData(0xFF);
+            }catch(Exception ex){
+                flag = false;
+            }
+        } else if (socketRed != null) {
+            try{
+                socketRed.sendUrgentData(0xFF);
+            }catch(Exception ex){
+                flag = false;
+            }
         }
-        userNum -= 1;
+        if (!flag) {
+            userNum = 0;
+        }
     }
     public boolean isFull() {
         return userNum == 2;
@@ -58,13 +72,19 @@ public class Room {
             return userBlue;
         }
     }
+    public void inform() throws Exception{
+        BufferedWriter writerBlue = new BufferedWriter(new OutputStreamWriter(socketBlue.getOutputStream()));
+        writerBlue.write("gameBegin");
+        writerBlue.newLine();
+        writerBlue.flush();
+    }
 
     public void beginGame() {
         Game game = new Game(this);
         try {
-            game.run();
+            game.start();
         } catch (Exception ignore) {
-
+            checkRoom();
         }
     }
     public void removeAll() {
@@ -76,6 +96,10 @@ public class Room {
 
         }
     }
+    public void input(String command) {
+        isInputted = true;
+        this.command = command;
+    }
 
     private class Game extends Thread {
         Room room;
@@ -83,33 +107,28 @@ public class Room {
             this.room = room;
         }
         public void run() {
-            InputStream input;
             OutputStream output;
-            BufferedReader readerBlue, readerRed;
             BufferedWriter writerBlue, writerRed;
             try {
-                input = socketBlue.getInputStream();
                 output = socketBlue.getOutputStream();
-                readerBlue = new BufferedReader(new InputStreamReader(input));
                 writerBlue = new BufferedWriter(new OutputStreamWriter(output));
-                writerBlue.write(1);
-                writerBlue.newLine();
-                writerBlue.flush();
 
-                input = socketRed.getInputStream();
                 output = socketRed.getOutputStream();
-                readerRed = new BufferedReader(new InputStreamReader(input));
                 writerRed = new BufferedWriter(new OutputStreamWriter(output));
-                writerRed.write(-1);
-                writerRed.newLine();
-                writerRed.flush();
 
                 int nowPlayer = 1;
                 Chessboard_OLD chessboard = new Chessboard_OLD();
                 while (chessboard.isEnd() == 0) {
                     if (nowPlayer == 1) {
-                        String command = readerBlue.readLine();
+                        isInputted = false;
+                        while (!isInputted) {
+                            Thread.sleep(100);
+                        }
+
+
                         chessboard.takeAction(nowPlayer, command);
+
+                        System.out.printf("[Blue] %s\n", command);
 
                         writerRed.write(command);
                         writerRed.newLine();
@@ -117,8 +136,14 @@ public class Room {
 
                         nowPlayer = -1;
                     } else {
-                        String command = readerRed.readLine();
+                        isInputted = false;
+                        while (!isInputted) {
+                            Thread.sleep(100);
+                        }
+
                         chessboard.takeAction(nowPlayer, command);
+
+                        System.out.printf("[Red] %s\n", command);
 
                         writerBlue.write(command);
                         writerBlue.newLine();
@@ -128,7 +153,7 @@ public class Room {
                     }
                 }
                 chessboard.save();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 room.removeAll();
                 interrupt();
             }

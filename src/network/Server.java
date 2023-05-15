@@ -34,6 +34,7 @@ public class Server {
         Socket socket;
         BufferedReader reader;
         BufferedWriter writer;
+        Room room;
         public Connect(Socket socket, BufferedReader reader, BufferedWriter writer) {
             this.socket = socket;
             this.reader = reader;
@@ -69,6 +70,9 @@ public class Server {
                         case "getUserData":
                             getUserData(commands[1]);
                             break;
+                        default:
+//                            System.out.printf("未知命令:%s\n", command);
+                            room.input(command);
                     }
                 } catch (IOException e) {
                     System.out.println(socket.getRemoteSocketAddress()+" disconnected.");
@@ -125,7 +129,8 @@ public class Server {
             roomNum++;
             for (int i = 0; i < rooms.size(); i++) {
                 if (rooms.get(i) == null) {
-                    rooms.set(i, new Room(i, roomName, username, socket));
+                    room = new Room(i, roomName, username, socket);
+                    rooms.set(i, room);
                     hasBeenCreated = true;
                     break;
                 }
@@ -137,6 +142,7 @@ public class Server {
         private void searchRoom() throws IOException {
             int count = 0;
             for (Room room : rooms) {
+                room.checkRoom();
                 if (room.isWaiting()) {
                     count++;
                 }
@@ -144,19 +150,30 @@ public class Server {
             sendMessage(String.valueOf(count));
             for (Room room : rooms) {
                 if (room.isWaiting()) {
-                    sendMessage("%10d %20s %20s".formatted(room.getRoomID(), room.getRoomName(), room.getRoomMate()));
+                    sendMessage("%10d%20s%20s".formatted(room.getRoomID(), room.getRoomName(), room.getRoomMate()));
                 }
             }
         }
         private void joinRoom(String username, String countNum) throws IOException {
-            String command = reader.readLine();
-            String[] commands = command.split(" ");
+            System.out.printf("请求加入房间");
             int count = 0;
             for (Room room : rooms) {
-                count++;
+                if (room.isWaiting()) {
+                    count++;
+                }
                 if (count == Integer.parseInt(countNum)) {
-                    room.joinRoom(commands[1], socket);
-
+                    this.room = room;
+                    System.out.println("找到对应房间");
+                    room.joinRoom(username, socket);
+                    try {
+                        System.out.println("申请加入");
+                        room.inform();
+                        sendMessage("joinRoomSuccessfully");
+                        System.out.println("加入成功");
+                        room.beginGame();
+                    } catch (Exception ignore) {
+                        sendMessage("joinRoomFail");
+                    }
                 }
             }
         }
@@ -248,11 +265,6 @@ public class Server {
             writer.write(message);
             writer.newLine();
             writer.flush();
-        }
-    }
-    class GameHolding extends Thread {
-        public GameHolding(Room room) {
-
         }
     }
 }

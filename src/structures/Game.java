@@ -64,6 +64,13 @@ public class Game {
             return playerRed;
         }
     }
+    public boolean isNetworkGame() {
+        boolean ret = false;
+        if (playerBlue.getIdentity() == 3 || playerRed.getIdentity() == 3) {
+            ret = true;
+        }
+        return ret;
+    }
     public void start() {
 
         nameMap.put(1, "playerBlue");
@@ -85,6 +92,7 @@ public class Game {
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
             step++;
+            System.out.println("游戏开始");
 
 //            System.out.println(step);
 
@@ -102,6 +110,7 @@ public class Game {
             int identity = getPlayer().getIdentity();
 
             if (identity == 1) {
+                System.out.println("本地输入");
 //                System.out.println("Client");
 //                System.out.println(getPlayer().getIdentity());
                 // 本地客户端回合，开放输入端口，等待Client输入
@@ -114,25 +123,29 @@ public class Game {
                     }
                     countWaitingTime++;
 
-                    // 计时
-                    if (countWaitingTime % 10 == 0) {
-                        int timeCountDown = 20 - countWaitingTime / 10;
-                        if (timeCountDown % 5 == 0 || timeCountDown < 5) {
-                            messageInput("%d seconds left".formatted(timeCountDown), "Warning");
-                            Client.updateGamePaint(password);
+                    if (!isNetworkGame()) {
+                        // 计时
+                        if (countWaitingTime % 10 == 0) {
+                            int timeCountDown = 20 - countWaitingTime / 10;
+                            if (timeCountDown % 5 == 0 || timeCountDown < 5) {
+                                messageInput("%d seconds left".formatted(timeCountDown), "Warning");
+                                Client.updateGamePaint(password);
+                            }
                         }
-                    }
-                    if (countWaitingTime == 200) {
-                        inputted = true;
-                        messageInput("Out of time limit.", nowPlayer);
-                        break;
+                        if (countWaitingTime == 200) {
+                            inputted = true;
+                            messageInput("Out of time limit.", nowPlayer);
+                            break;
+                        }
                     }
                 }
             } else if (identity == 2) {
+                System.out.println("电脑输入");
 //                System.out.println("Computer");
                 // 电脑回合，等待电脑计算
                 playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
             } else if (identity == 3) {
+                System.out.println("网络输入");
                 // 对手回合，开放输入端口，等待网络输入
                 inputted = false;
                 while (!inputted) {
@@ -179,6 +192,13 @@ public class Game {
         inputted = true;
         receiveCommand = command;
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), command));
+    }
+    public void input(String command) {
+        System.out.printf("收到网络行动:%s", command);
+        String[] elements = command.split(" ");
+        int[] pos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
+        int[] nextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
+        input(pos, nextPos, elements[5]);
     }
     public void messageInput(String line) {
         messages.add("[local] %s".formatted(line));
