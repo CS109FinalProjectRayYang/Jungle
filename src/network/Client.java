@@ -857,7 +857,6 @@ public class Client {
             playbackButtonPanel.add(lastStepButton);
             playbackButtonPanel.add(jumpStepBox);
             playbackButtonPanel.add(jumpStepButton);
-            playbackButtonPanel.add(Box.createVerticalGlue());
             playbackButtonPanel.add(backInitButton);
         }
 
@@ -1158,6 +1157,7 @@ public class Client {
             try {
                 String ip = "10.13.249.60";
                 ip = "127.0.0.1";
+                ip = "121.5.129.39";
 
                 Socket socket = new Socket(ip, 8080);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
