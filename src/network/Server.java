@@ -70,8 +70,13 @@ public class Server {
                         case "getUserData":
                             getUserData(commands[1]);
                             break;
+                        case "gameWin":
+                            gameWin(commands[1]);
+                            break;
+                        case "gameLose":
+                            gameLose(commands[1]);
+                            break;
                         default:
-//                            System.out.printf("未知命令:%s\n", command);
                             room.input(command);
                     }
                 } catch (IOException e) {
@@ -190,6 +195,26 @@ public class Server {
         private void exitRoom(String username, String roomID) {
             // TODO: Complete the method exitRoom.
         }
+
+        private void gameWin(String username) {
+            addGameData(1, username);
+        }
+
+        private void gameLose(String username) {
+            addGameData(0, username);
+        }
+
+        private void addGameData(int addWinCount, String username) {
+            String path = "data/user/%s/%s.txt".formatted(username, username);
+            ArrayList<String> lines = readFile(path);
+            int countAllGames = Integer.parseInt(lines.get(2)) + 1;
+            int countWinGames = Integer.parseInt(lines.get(3)) + addWinCount;
+            lines.set(2, countAllGames + "");
+            lines.set(3, countWinGames + "");
+            writeFile(path, lines.get(0), lines.get(1), lines.get(2), lines.get(3));
+        }
+
+
         private boolean hasUsername(String username) {
             boolean hasUsername = false;
             String path = "data/user/usernames.txt";
