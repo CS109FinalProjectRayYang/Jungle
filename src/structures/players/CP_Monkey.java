@@ -2,12 +2,26 @@ package structures.players;
 
 import structures.Chessboard_NEW;
 import structures.Game;
+import structures.chesses.Chess;
 
 public class CP_Monkey extends ComputerPlayer{
     @Override
     public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
         int[] nowPos = new int[2];
         int[] nextPos = new int[2];
+        Chess chessNow = chessboard.getChess(nowPos);
+        boolean isMove = false;
+        for(int i = 0; i <= chessNow.getLegalMove(nowPos).size()-1; i++){
+            if(chessboard.getChess(chessNow.getLegalMove(nowPos).get(i)) != null){
+                isMove = true;
+                nextPos[0] = chessNow.getLegalMove(nowPos).get(i)[0];
+                nextPos[1] = chessNow.getLegalMove(nowPos).get(i)[1];
+            }
+        }
+        if(!isMove){
+            nextPos[0] = chessNow.getLegalMove(nowPos).get(0)[0];
+            nextPos[1] = chessNow.getLegalMove(nowPos).get(0)[1];
+        }
 
         /*
 

@@ -1155,8 +1155,8 @@ public class Client {
 
         private void onlineGame() {
             try {
-                String ip = "10.13.249.60";
-                ip = "127.0.0.1";
+                String ip = "10.27.40.151";
+//                ip = "127.0.0.1";
                 ip = "121.5.129.39";
 
                 Socket socket = new Socket(ip, 8080);
