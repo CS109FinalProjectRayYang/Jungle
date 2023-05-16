@@ -30,7 +30,7 @@ public class Server {
             tConnect.start();
         }
     }
-    private static class Connect extends Thread {
+    public static class Connect extends Thread {
         Socket socket;
         BufferedReader reader;
         BufferedWriter writer;
@@ -126,17 +126,23 @@ public class Server {
         }
         private void newRoom(String username, String roomName) {
             boolean hasBeenCreated = false;
+            System.out.println("请求创建房间");
             roomNum++;
             for (int i = 0; i < rooms.size(); i++) {
                 if (rooms.get(i) == null) {
                     room = new Room(i, roomName, username, socket);
+                    room.setConnectBlue(this);
+                    System.out.println("创建房间已赋值");
                     rooms.set(i, room);
                     hasBeenCreated = true;
                     break;
                 }
             }
             if (!hasBeenCreated) {
-                rooms.add(new Room(rooms.size(), roomName, username, socket));
+                System.out.println("创建房间已赋值");
+                room = new Room(rooms.size(), roomName, username, socket);
+                room.setConnectBlue(this);
+                rooms.add(room);
             }
         }
         private void searchRoom() throws IOException {
@@ -155,14 +161,18 @@ public class Server {
             }
         }
         private void joinRoom(String username, String countNum) throws IOException {
-            System.out.printf("请求加入房间");
+            System.out.println("请求加入房间");
             int count = 0;
             for (Room room : rooms) {
-                if (room.isWaiting()) {
+                if (room != null && room.isWaiting()) {
                     count++;
                 }
                 if (count == Integer.parseInt(countNum)) {
                     this.room = room;
+                    this.room.setConnectRed(this);
+                    if (this.room != null) {
+                        System.out.println("加入房间已赋值");
+                    }
                     System.out.println("找到对应房间");
                     room.joinRoom(username, socket);
                     try {
@@ -261,7 +271,7 @@ public class Server {
                 writeFile(path, lines);
             }
         }
-        private void sendMessage(String message) throws IOException {
+        public void sendMessage(String message) throws IOException {
             writer.write(message);
             writer.newLine();
             writer.flush();

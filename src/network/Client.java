@@ -524,7 +524,6 @@ public class Client {
         private void loadMainFrame() {
             // 设置主窗体面板的布局
             mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
-
             // 设置主窗体基本属性，并将主窗体面板加入到主窗体上
             mainFrame = new JFrame();
 //            mainFrame.addComponentListener(new MainFrameAdapter());
@@ -1349,14 +1348,14 @@ public class Client {
                             String command = reader.readLine();
                             if (command.equals("joinRoomSuccessfully")) {
                                 game = new Game(new NetworkPlayer(), new HumanPlayer());
-                                gameStart = new GameStart();
-                                gameStart.start();
                                 gamePaint();
+                                TReceive tReceive = new TReceive();
+                                tReceive.start();
                             } else {
                                 throw new Exception();
                             }
                         } catch (Exception ignore) {
-                            JOptionPane.showMessageDialog(mainFrame, "服务器连接错误");
+                            JOptionPane.showMessageDialog(mainFrame, "服务器连接错误1");
                         }
                     }
                 } else {
@@ -1374,12 +1373,12 @@ public class Client {
                     String command = reader.readLine();
                     if (command.equals("gameBegin")) {
                         game = new Game(new HumanPlayer(), new NetworkPlayer());
-                        gameStart = new GameStart();
-                        gameStart.start();
                         gamePaint();
+                        TReceive tReceive = new TReceive();
+                        tReceive.start();
                     }
                 } catch (Exception ignore) {
-                    JOptionPane.showMessageDialog(mainFrame, "服务器连接错误");
+                    JOptionPane.showMessageDialog(mainFrame, "服务器连接错误2");
                     initPaint();
                 }
             });
@@ -1413,12 +1412,13 @@ public class Client {
         private  void closeWaitingPaint() {
             waitingFrame.setVisible(false);
         }
-        class TReceive extends Thread {
+        static class TReceive extends Thread {
             @Override
             public void run() {
                 try {
                     while (true) {
                         String command = reader.readLine();
+                        System.out.println("接收到消息："+command);
                         game.input(command);
                     }
                 } catch (Exception ignore) {

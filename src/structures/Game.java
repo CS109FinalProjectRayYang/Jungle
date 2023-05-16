@@ -92,7 +92,7 @@ public class Game {
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
             step++;
-            System.out.println("游戏开始");
+            System.out.println("回合开始");
 
 //            System.out.println(step);
 
@@ -192,13 +192,16 @@ public class Game {
         inputted = true;
         receiveCommand = command;
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), command));
+//        Client.updateGamePaint(password);
+        System.out.println("移动完成");
     }
     public void input(String command) {
-        System.out.printf("收到网络行动:%s", command);
+        System.out.printf("Game收到网络行动:%s\n", command);
         String[] elements = command.split(" ");
         int[] pos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
         int[] nextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
-        input(pos, nextPos, elements[5]);
+        System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
+        input(pos, nextPos, elements[4]);
     }
     public void messageInput(String line) {
         messages.add("[local] %s".formatted(line));

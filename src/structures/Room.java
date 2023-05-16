@@ -1,5 +1,7 @@
 package structures;
 
+import network.Server;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -10,8 +12,19 @@ public class Room {
     String userBlue = null;
     String userRed = null;
     Socket socketBlue, socketRed;
+    Server.Connect connectBlue, connectRed;
     boolean isInputted = false;
+    int nowWriter = -1;
     String command;
+
+    public void setConnectBlue(Server.Connect connectBlue) {
+        this.connectBlue = connectBlue;
+    }
+
+    public void setConnectRed(Server.Connect connectRed) {
+        this.connectRed = connectRed;
+    }
+
     public Room(int roomID, String roomName, String username, Socket socket) {
         this.roomID = roomID;
         this.roomName = roomName;
@@ -73,10 +86,7 @@ public class Room {
         }
     }
     public void inform() throws Exception{
-        BufferedWriter writerBlue = new BufferedWriter(new OutputStreamWriter(socketBlue.getOutputStream()));
-        writerBlue.write("gameBegin");
-        writerBlue.newLine();
-        writerBlue.flush();
+        connectBlue.sendMessage("gameBegin");
     }
 
     public void beginGame() {
@@ -98,6 +108,7 @@ public class Room {
     }
     public void input(String command) {
         isInputted = true;
+        System.out.println(this + "得到消息" + command);
         this.command = command;
     }
 
@@ -110,11 +121,6 @@ public class Room {
             OutputStream output;
             BufferedWriter writerBlue, writerRed;
             try {
-                output = socketBlue.getOutputStream();
-                writerBlue = new BufferedWriter(new OutputStreamWriter(output));
-
-                output = socketRed.getOutputStream();
-                writerRed = new BufferedWriter(new OutputStreamWriter(output));
 
                 int nowPlayer = 1;
                 Chessboard_OLD chessboard = new Chessboard_OLD();
@@ -130,9 +136,7 @@ public class Room {
 
                         System.out.printf("[Blue] %s\n", command);
 
-                        writerRed.write(command);
-                        writerRed.newLine();
-                        writerRed.flush();
+                        connectRed.sendMessage(command);
 
                         nowPlayer = -1;
                     } else {
@@ -145,9 +149,7 @@ public class Room {
 
                         System.out.printf("[Red] %s\n", command);
 
-                        writerBlue.write(command);
-                        writerBlue.newLine();
-                        writerBlue.flush();
+                        connectBlue.sendMessage(command);
 
                         nowPlayer = 1;
                     }
