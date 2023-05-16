@@ -42,6 +42,9 @@ public class Game {
         this.playerBlue = playerBlue;
         this.playerRed = playerRed;
     }
+    public boolean isGameEnd() {
+        return gameCondition != 0 || step >= 1000;
+    }
     public void setHistory(History history) {
         this.history = history;
     }
@@ -168,15 +171,18 @@ public class Game {
 //        chessboard.printBoard();
         nowPlayer = 0;
 
+        if (isNetworkGame() && gameCondition != 0) {
+            if (playerMap.get(gameCondition).getIdentity() == 1) {
+                Client.informServerGameEnd("gameWin");
+            } else {
+                Client.informServerGameEnd("gameLose");
+            }
+        }
+
         Client.setNowPlayer(nowPlayer, password);
         Client.updateGamePaint(password);
         Client.winPaint(gameCondition, password);
 
-        if (gameCondition != 0) {
-//            System.out.printf("%s Wins!\n", nameMap.get(gameCondition));
-        } else {
-//            System.out.println("Game Draw!");
-        }
     }
 
     public int getGameCondition() {

@@ -70,6 +70,16 @@ public class Client {
             myGUI.setCountTime(time);
         }
     }
+
+    public static void informServerGameEnd(String command) {
+        try {
+            writer.write(command + " " + username);
+            writer.newLine();
+            writer.flush();
+        } catch (Exception ignore) {
+
+        }
+    }
     public static void main(String[] args) {
 
         try {
@@ -86,6 +96,7 @@ public class Client {
         myGUI.run();
 
     }
+
     private static class TPlayMusic extends Thread {
         @Override
         public void run() {
@@ -471,12 +482,16 @@ public class Client {
 
         private void winPaint(int player) {
             String winner;
-            if (player == 1) {
-                winner = "蓝方";
+            if (player != 0) {
+                if (player == 1) {
+                    winner = "蓝方";
+                } else {
+                    winner = "红方";
+                }
+                JOptionPane.showMessageDialog(mainFrame, winner + "获胜！");
             } else {
-                winner = "红方";
+                JOptionPane.showMessageDialog(mainFrame, "双方平局！");
             }
-            JOptionPane.showMessageDialog(mainFrame, winner + "获胜！");
         }
 
         private void chooseDifficultyPaint() {
@@ -913,7 +928,7 @@ public class Client {
         private class regretButtonListener implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (game.getPlayer().getIdentity() == 1 && game.getHistorySize() > 1) {
+                if (game.getPlayer().getIdentity() == 1 && game.getHistorySize() > 1 && !game.isNetworkGame() && !game.isGameEnd()) {
                     game.buildFromHistory(2);
                     updateGamePaint();
                     game.messageInput("Regret", nowPlayer);
@@ -923,8 +938,12 @@ public class Client {
                 } else {
                     if (game.getPlayer().getIdentity() != 1) {
                         JOptionPane.showMessageDialog(mainFrame, "悔棋失败：不是你的回合");
-                    } else {
+                    } else if (game.getHistorySize() < 2){
                         JOptionPane.showMessageDialog(mainFrame, "悔棋失败：无可悔棋步骤");
+                    } else if (game.isNetworkGame()) {
+                        JOptionPane.showMessageDialog(mainFrame, "悔棋失败：网络对战禁用悔棋");
+                    } else if (game.isGameEnd()) {
+                        JOptionPane.showMessageDialog(mainFrame, "悔棋失败：游戏已结束");
                     }
                 }
             }
@@ -933,13 +952,17 @@ public class Client {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameStart.interrupt();
-                game.setPassword(-1);
-                game = new Game(game.getPlayerBlue(), game.getPlayerRed());
-                gameStart = new GameStart();
-                gameStart.start();
-                System.out.println("Resettled successfully!");
-                JOptionPane.showMessageDialog(mainFrame, "重置成功");
+                if (!game.isNetworkGame()) {
+                    gameStart.interrupt();
+                    game.setPassword(-1);
+                    game = new Game(game.getPlayerBlue(), game.getPlayerRed());
+                    gameStart = new GameStart();
+                    gameStart.start();
+                    System.out.println("Resettled successfully!");
+                    JOptionPane.showMessageDialog(mainFrame, "重置成功");
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "重置失败：联机对战禁用重置");
+                }
             }
         }
         private class saveButtonListener implements ActionListener {
@@ -1256,7 +1279,7 @@ public class Client {
             usernameLabel.setText("用户名：%s".formatted(username));
             gameNumberLabel.setText("对局数：%d".formatted(gameNum));
             if (gameNum != 0) {
-                winningRateLabel.setText("胜率：%.2f".formatted((double) winNum / gameNum));
+                winningRateLabel.setText("胜率：%.2f%%".formatted((double) winNum / gameNum * 100));
             } else {
                 winningRateLabel.setText("胜率：暂无胜率");
             }
