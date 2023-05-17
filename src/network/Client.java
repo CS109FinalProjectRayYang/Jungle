@@ -941,7 +941,7 @@ public class Client {
                     game.buildFromHistory(2);
                     updateGamePaint();
                     game.messageInput("Regret", nowPlayer);
-                    System.out.println("Regretted successfully!");
+//                    System.out.println("Regretted successfully!");
                     JOptionPane.showMessageDialog(mainFrame, "悔棋成功");
                     updateGamePaint();
                 } else {
@@ -967,7 +967,7 @@ public class Client {
                     game = new Game(game.getPlayerBlue(), game.getPlayerRed());
                     gameStart = new GameStart();
                     gameStart.start();
-                    System.out.println("Resettled successfully!");
+//                    System.out.println("Resettled successfully!");
                     JOptionPane.showMessageDialog(mainFrame, "重置成功");
                 } else {
                     JOptionPane.showMessageDialog(mainFrame, "重置失败：联机对战禁用重置");
@@ -1175,7 +1175,7 @@ public class Client {
                 loginGUI.run();
                 closeWaitingPaint();
             } catch (Exception ignore) {
-                System.out.println("Server Error");
+//                System.out.println("Server Error");
                 JOptionPane.showMessageDialog(mainFrame, "无法连接至服务器");
                 closeWaitingPaint();
             }
@@ -1214,7 +1214,7 @@ public class Client {
                             default -> JOptionPane.showMessageDialog(loginFrame, "登陆失败：未知错误");
                         }
                     } catch (IOException ignore) {
-                        System.out.println("Server Error");
+//                        System.out.println("Server Error");
                         JOptionPane.showMessageDialog(loginFrame, "无法连接至服务器");
                     }
                 });
@@ -1226,7 +1226,7 @@ public class Client {
                         writer.flush();
                         JOptionPane.showMessageDialog(loginFrame, "注册成功");
                     } catch (IOException ignore) {
-                        System.out.println("Server Error");
+//                        System.out.println("Server Error");
                         JOptionPane.showMessageDialog(loginFrame, "无法连接至服务器");
                     }
                 });
@@ -1451,7 +1451,7 @@ public class Client {
                 try {
                     while (true) {
                         String command = reader.readLine();
-                        System.out.println("接收到消息："+command);
+//                        System.out.println("接收到消息："+command);
                         game.input(command);
                     }
                 } catch (Exception ignore) {

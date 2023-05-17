@@ -108,7 +108,7 @@ public class Room {
     }
     public void act(String command) {
         isInputted = true;
-        System.out.println(this + "得到消息" + command);
+//        System.out.println(this + "得到消息" + command);
         this.command = command;
     }
     public void input(String command) {
