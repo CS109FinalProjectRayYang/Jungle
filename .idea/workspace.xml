@@ -13,13 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38bbf1cf-15e0-4496-beaf-75683c3ab46b" name="变更" comment="去除LoadImg中的无用输出">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/Jungle_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/save/Error1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/save/前一步显示蓝方获胜.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/network/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/network/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/structures/players/CP_Monkey.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/structures/players/CP_Monkey.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
