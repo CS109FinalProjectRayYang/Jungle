@@ -599,7 +599,7 @@ public class Client {
                     game.input(clickedPos, clickPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(clickedPos).getChessName(), clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
                     if (game.isNetworkGame()) {
                         try {
-                            writer.write("%d %d %d %d Finished".formatted(clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
+                            writer.write("Action %d %d %d %d".formatted(clickedPos[0], clickedPos[1], clickPos[0], clickPos[1]));
                             writer.newLine();
                             writer.flush();
                         } catch (Exception ignore) {
@@ -782,6 +782,15 @@ public class Client {
 
             sendMessageButton.addActionListener(e -> {
                 game.messageInput(inputBox.getText());
+                if (game.isNetworkGame()) {
+                    try {
+                        writer.write("Message %d %s".formatted(game.getTeam(), inputBox.getText()));
+                        writer.newLine();
+                        writer.flush();
+                    } catch (Exception ignore) {
+
+                    }
+                }
                 inputBox.setText("");
                 updateMessageBox();
             });

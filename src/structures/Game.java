@@ -201,22 +201,37 @@ public class Game {
 //        Client.updateGamePaint(password);
         System.out.println("移动完成");
     }
+    public int getTeam() {
+        if (playerBlue.getIdentity() == 1) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
     public void input(String command) {
-        System.out.printf("Game收到网络行动:%s\n", command);
+        System.out.printf("Game收到网络信息:%s\n", command);
         String[] elements = command.split(" ");
-        int[] pos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
-        int[] nextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
-        System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
-        input(pos, nextPos, elements[4]);
+        if (elements[0].equals("Action")) {
+            System.out.println("行动信息");
+            int[] pos = new int[]{Integer.parseInt(elements[1]), Integer.parseInt(elements[2])};
+            int[] nextPos = new int[]{Integer.parseInt(elements[3]), Integer.parseInt(elements[4])};
+            System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
+            input(pos, nextPos, "Action Performed");
+        } else {
+            System.out.printf("消息信息 %s\n", command);
+            messageInput(command, "network");
+        }
     }
     public void messageInput(String line) {
         messages.add("[local] %s".formatted(line));
     }
     public void messageInput(String line, int nowPlayer) {
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), line));
+
     }
     public void messageInput(String line, String name) {
         messages.add("[%s] %s".formatted(name, line));
+        Client.updateGamePaint(password);
     }
     public String[] getMessages() {
         String[] ret = new String[messages.size()];
