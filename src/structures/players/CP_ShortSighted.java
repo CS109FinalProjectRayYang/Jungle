@@ -25,7 +25,7 @@ public class CP_ShortSighted extends ComputerPlayer{
                     ArrayList<int[]> legalMoves = chessOnPos.getLegalMove(pos);
                     for (int[] nextPos : legalMoves) {
                         if (chessboard.getChess(3, 5) != null && chessboard.getChess(3, 5).getChessName().equals("Dog")) {
-                            System.out.println("break point");
+//                            System.out.println("break point");
                         }
                         Chessboard_NEW chessboardNew = new Chessboard_NEW(chessboard);
                         chessboardNew.moveChess(pos, nextPos);
@@ -49,7 +49,7 @@ public class CP_ShortSighted extends ComputerPlayer{
         lastChessPos = maxNextPos;
 //        System.out.println(maxPos[0] + " " + maxPos[1]);
 //        System.out.println(maxNextPos[0] + " " + maxNextPos[1]);
-        System.out.println(maxPos[0] + " " + maxPos[1]);
+//        System.out.println(maxPos[0] + " " + maxPos[1]);
         game.input(maxPos, maxNextPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(maxPos).getChessName(), maxPos[0], maxPos[1], maxNextPos[0], maxNextPos[1]));
 
     }//哪个位置上的棋子  移到哪个位置上

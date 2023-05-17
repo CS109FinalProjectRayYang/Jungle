@@ -95,7 +95,7 @@ public class Game {
         while ((gameCondition = chessboard.isEnd()) == 0 && step < 1000) {
 
             step++;
-            System.out.println("回合开始");
+//            System.out.println("回合开始");
 
 //            System.out.println(step);
 
@@ -113,7 +113,7 @@ public class Game {
             int identity = getPlayer().getIdentity();
 
             if (identity == 1) {
-                System.out.println("本地输入");
+//                System.out.println("本地输入");
 //                System.out.println("Client");
 //                System.out.println(getPlayer().getIdentity());
                 // 本地客户端回合，开放输入端口，等待Client输入
@@ -143,12 +143,12 @@ public class Game {
                     }
                 }
             } else if (identity == 2) {
-                System.out.println("电脑输入");
+//                System.out.println("电脑输入");
 //                System.out.println("Computer");
                 // 电脑回合，等待电脑计算
                 playerMap.get(nowPlayer).takeAction(chessboard, nowPlayer, this);
             } else if (identity == 3) {
-                System.out.println("网络输入");
+//                System.out.println("网络输入");
                 // 对手回合，开放输入端口，等待网络输入
                 inputted = false;
                 while (!inputted) {
@@ -199,24 +199,35 @@ public class Game {
         receiveCommand = command;
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), command));
 //        Client.updateGamePaint(password);
-        System.out.println("移动完成");
+    }
+    public int getTeam() {
+        if (playerBlue.getIdentity() == 1) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
     public void input(String command) {
-        System.out.printf("Game收到网络行动:%s\n", command);
         String[] elements = command.split(" ");
-        int[] pos = new int[]{Integer.parseInt(elements[0]), Integer.parseInt(elements[1])};
-        int[] nextPos = new int[]{Integer.parseInt(elements[2]), Integer.parseInt(elements[3])};
-        System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
-        input(pos, nextPos, elements[4]);
+        if (elements[0].equals("Action")) {
+            int[] pos = new int[]{Integer.parseInt(elements[1]), Integer.parseInt(elements[2])};
+            int[] nextPos = new int[]{Integer.parseInt(elements[3]), Integer.parseInt(elements[4])};
+//            System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
+            input(pos, nextPos, "Action Performed");
+        } else {
+            messageInput(command, "network");
+        }
     }
     public void messageInput(String line) {
         messages.add("[local] %s".formatted(line));
     }
     public void messageInput(String line, int nowPlayer) {
         messages.add("[%s] %s".formatted(nameMap.get(nowPlayer), line));
+
     }
     public void messageInput(String line, String name) {
         messages.add("[%s] %s".formatted(name, line));
+        Client.updateGamePaint(password);
     }
     public String[] getMessages() {
         String[] ret = new String[messages.size()];

@@ -106,10 +106,21 @@ public class Room {
 
         }
     }
-    public void input(String command) {
+    public void act(String command) {
         isInputted = true;
-        System.out.println(this + "得到消息" + command);
+//        System.out.println(this + "得到消息" + command);
         this.command = command;
+    }
+    public void input(String command) {
+        try {
+            if (command.charAt(8) == '1') {
+                connectRed.sendMessage(command.substring(10));
+            } else {
+                connectBlue.sendMessage(command.substring(11));
+            }
+        } catch (Exception ignore) {
+
+        }
     }
 
     private class Game extends Thread {

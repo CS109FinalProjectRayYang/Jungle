@@ -292,7 +292,7 @@ public class ComputerPlayer extends Player{
         chessboard.moveChess(new int[]{1, 1}, new int[]{2, 1});
         ComputerPlayer ai = new ComputerPlayer();
         double value = removeLittleNumber(ai.evaluateMap(chessboard, 0), -5);
-        System.out.println(value);
+//        System.out.println(value);
 
     }
 }

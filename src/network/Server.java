@@ -2,15 +2,12 @@ package network;
 
 import structures.Room;
 
-import javax.print.DocFlavor;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Server {
     static ArrayList<Room> rooms = new ArrayList<>();
@@ -76,8 +73,12 @@ public class Server {
                         case "gameLose":
                             gameLose(commands[1]);
                             break;
-                        default:
+                        case "Action":
+                            room.act(command);
+                            break;
+                        case "Message":
                             room.input(command);
+                            break;
                     }
                 } catch (IOException e) {
                     System.out.println(socket.getRemoteSocketAddress()+" disconnected.");
