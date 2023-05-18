@@ -127,13 +127,17 @@ public class Game {
                     countWaitingTime++;
 
                     if (!isNetworkGame()) {
+                        if (countWaitingTime == 1) {
+                            Client.setCountTime(20, password);
+                        }
                         // 计时
                         if (countWaitingTime % 10 == 0) {
                             int timeCountDown = 20 - countWaitingTime / 10;
-                            if (timeCountDown % 5 == 0 || timeCountDown < 5) {
-                                messageInput("%d seconds left".formatted(timeCountDown), "Warning");
-                                Client.updateGamePaint(password);
-                            }
+                            Client.setCountTime(timeCountDown, password);
+//                            if (timeCountDown % 5 == 0 || timeCountDown < 5) {
+//                                messageInput("%d seconds left".formatted(timeCountDown), "Warning");
+//                                Client.updateGamePaint(password);
+//                            }
                         }
                         if (countWaitingTime == 200) {
                             inputted = true;

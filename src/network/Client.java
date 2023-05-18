@@ -123,6 +123,7 @@ public class Client {
         JFrame mainFrame;
         //面板
         JPanel mainFramePanel = new JPanel();
+        JPanel mapFramePanel = new JPanel();
         JPanel initButtonPanel = new JPanel();
         JPanel localGameButtonPanel = new JPanel();
         JPanel gameButtonPanel = new JPanel();
@@ -234,6 +235,7 @@ public class Client {
 
 
         private void initPaint() {
+            mainFrame.setContentPane(mainFramePanel);
             page = 1;
 
             // 清空主窗体
@@ -251,6 +253,7 @@ public class Client {
 
 
         private void localGamePaint() {
+            mainFrame.setContentPane(mainFramePanel);
             page = 2;
 
             // 清空主窗体
@@ -283,36 +286,46 @@ public class Client {
         }
 
         private void gamePaint() {
+            mainFrame.setContentPane(mapFramePanel);
             page = 4;
 
-            mainFramePanel.removeAll();
+            mapFramePanel.removeAll();
+            mapFramePanel.setLayout(null);
 
-            mainFramePanel.add(mapImgLabel);
-            mainFramePanel.add(gameButtonPanel);
-            mainFramePanel.add(messagePanel);
+            mapImgLabel.setBounds(0, 0, 1000, 700);
+            gameButtonPanel.setBounds(1000, 0, 70, 700);
+            messagePanel.setBounds(1070, 0, 330, 700);
+
+            mapFramePanel.add(mapImgLabel);
+            mapFramePanel.add(gameButtonPanel);
+            mapFramePanel.add(messagePanel);
+
+//            System.out.printf("mapImgLabel: (%.2f, %.2f)\n", mapImgLabel.getBounds().getX(), mapImgLabel.getBounds().getY());
+//            System.out.printf("gameButtonPanel: (%.2f, %.2f)\n", gameButtonPanel.getBounds().getX(), gameButtonPanel.getBounds().getY());
+//            System.out.printf("messagePanel: (%.2f, %.2f)\n", messagePanel.getBounds().getX(), messagePanel.getBounds().getY());
 
             mainFrame.setLocation(50, 30);
-            mainFrame.pack();
+            mainFrame.setSize(1410, 735);
 
             gameStart = new GameStart();
             gameStart.start();
         }
         private void updateGamePaint() {
-            mainFramePanel.removeAll();
+            mapFramePanel.removeAll();
 
             updateMessageBox();
 
             drawAnimals();
 
-//            drawTime();
+            drawTime();
 
             if (clicked) {
                 drawChoose();
             }
 
-            mainFramePanel.add(mapImgLabel);
-            mainFramePanel.add(gameButtonPanel);
-            mainFramePanel.add(messagePanel);
+            mapFramePanel.add(mapImgLabel);
+            mapFramePanel.add(gameButtonPanel);
+            mapFramePanel.add(messagePanel);
 
             mainFrame.repaint();
 
@@ -321,7 +334,7 @@ public class Client {
 
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
             } catch (Exception ignore) {
 
             }
@@ -379,7 +392,6 @@ public class Client {
         }
 
         private void drawAnimals() {
-            mainFramePanel.setLayout(null);
             Chessboard_NEW chessboard = game.getChessboard();
             for (int i = 1; i <= Chessboard_NEW.getSizeY(); i++) {
                 for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
@@ -407,11 +419,10 @@ public class Client {
                         }
                         imgLabel.setBounds(posX, posY, 116, 80);
 
-                        mainFramePanel.add(imgLabel);
+                        mapFramePanel.add(imgLabel);
                     }
                 }
             }
-            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
 
         private void loadImg() {
@@ -438,7 +449,6 @@ public class Client {
 
         private void drawChoose() {
             String path;
-            mainFramePanel.setLayout(null);
             Chess chess = game.getChessboard().getChess(clickedPos);
             ImageIcon imgIconTemp;
             for (int[] temp : chess.getLegalMove(clickedPos)) {
@@ -454,23 +464,17 @@ public class Client {
                 JLabel chosenImgLabel = new JLabel(imgIconTemp);
                 chosenImgLabel.setBounds(63 + 80 * temp[0], 41 + 80 * temp[1], 80, 80);
 
-                mainFramePanel.add(chosenImgLabel);
+                mapFramePanel.add(chosenImgLabel);
             }
-
-            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
 
         private void drawTime() {
             int posX = 460 + 440 * nowPlayer;
             int posY = 10;
 
-            mainFramePanel.setLayout(null);
-
             timeLabel.setBounds(posX, posY, 80, 80);
 
-            mainFramePanel.add(timeLabel);
-
-            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
+            mapFramePanel.add(timeLabel);
         }
 
         private void updateMessageBox() {
@@ -525,7 +529,7 @@ public class Client {
 
         public void setCountTime(int time) {
             timeLabel.setText("%d".formatted(time));
-            updateGamePaint();
+            mainFrame.repaint();
         }
 
 
