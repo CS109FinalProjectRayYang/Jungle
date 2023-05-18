@@ -105,6 +105,7 @@ public class Server {
             if (hasUsername(username)) {
                 sendMessage("UsernameUsed");
             } else {
+                sendMessage("RegisteredSuccessfully");
                 String path = "data/user/usernames.txt";
                 appendFile(path, username);
                 path = "data/user/%s/%s.txt".formatted(username, username);

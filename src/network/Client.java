@@ -1254,10 +1254,19 @@ public class Client {
 
                 registerButton.addActionListener(e -> {
                     try {
-                        writer.write("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
-                        writer.newLine();
-                        writer.flush();
-                        JOptionPane.showMessageDialog(loginFrame, "注册成功");
+                        if (!usernameField.getText().equals("")) {
+                            writer.write("register %s %s".formatted(usernameField.getText(), passwordField.getText()));
+                            writer.newLine();
+                            writer.flush();
+                            String feedback = reader.readLine();
+                            if (feedback.equals("UsernameUsed")) {
+                                JOptionPane.showMessageDialog(loginFrame, "用户名已被使用");
+                            } else {
+                                JOptionPane.showMessageDialog(loginFrame, "注册成功");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(loginFrame, "请完善内容");
+                        }
                     } catch (IOException ignore) {
 //                        System.out.println("Server Error");
                         JOptionPane.showMessageDialog(loginFrame, "无法连接至服务器");
