@@ -1,7 +1,6 @@
 package structures;
 
 import network.Client;
-import structures.players.ComputerPlayer;
 import structures.players.HumanPlayer;
 import structures.players.Player;
 
@@ -15,7 +14,7 @@ public class Game {
     Player playerBlue;
     Player playerRed;
     int gameCondition;
-    Chessboard_NEW chessboard;
+    Chessboard chessboard;
     boolean inputted = true;
     int nowPlayer = 1;
     int countWaitingTime = 0;
@@ -29,13 +28,13 @@ public class Game {
         playerRed = new HumanPlayer();
 
         // 新建并初始化棋盘
-        chessboard = new Chessboard_NEW();
+        chessboard = new Chessboard();
         chessboard.initBoard();
     }
     public Game(Player playerBlue, Player playerRed) {
         setPlayer(playerBlue, playerRed);
         // 新建并初始化棋盘
-        chessboard = new Chessboard_NEW();
+        chessboard = new Chessboard();
         chessboard.initBoard();
     }
     public void setPlayer(Player playerBlue, Player playerRed) {
@@ -126,7 +125,7 @@ public class Game {
                     }
                     countWaitingTime++;
 
-                    if (!isNetworkGame()) {
+                    if (!isNetworkGame() || true) {
                         if (countWaitingTime == 1) {
                             Client.setCountTime(20, password);
                         }
@@ -142,10 +141,14 @@ public class Game {
                         if (countWaitingTime == 200) {
                             inputted = true;
                             messageInput("Out of time limit.", nowPlayer);
+                            if (isNetworkGame()) {
+                                Client.timeOver(password);
+                            }
                             break;
                         }
                     }
                 }
+                Client.setCountTime(-1, password);
             } else if (identity == 2) {
 //                System.out.println("电脑输入");
 //                System.out.println("Computer");
@@ -217,7 +220,11 @@ public class Game {
             int[] pos = new int[]{Integer.parseInt(elements[1]), Integer.parseInt(elements[2])};
             int[] nextPos = new int[]{Integer.parseInt(elements[3]), Integer.parseInt(elements[4])};
 //            System.out.printf("(%d, %d) -> (%d, %d)\n", pos[0], pos[1], nextPos[0], nextPos[1]);
-            input(pos, nextPos, "Action Performed");
+            if (pos[0] != 0) {
+                input(pos, nextPos, "Action Performed");
+            } else {
+                input(pos, nextPos, "Out of time limit.");
+            }
         } else {
             messageInput(command, "network");
         }
@@ -258,7 +265,7 @@ public class Game {
     }
     public void buildFromHistory(History history) {
         this.history = history;
-        chessboard = new Chessboard_NEW();
+        chessboard = new Chessboard();
         chessboard.initBoard();
         for (int i = 1; i <= history.getSize(); i++) {
             int[][] nowStep = history.getHistory(i);
@@ -279,7 +286,7 @@ public class Game {
         return history.getSize();
     }
 
-    public Chessboard_NEW getChessboard() {
+    public Chessboard getChessboard() {
         return chessboard;
     }
     private void updateNowPlayer() {

@@ -4,9 +4,6 @@ import structures.*;
 import structures.chesses.Chess;
 import structures.players.*;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,8 +33,8 @@ public class Client {
     static BufferedWriter writer;
     static History playbackHistory = new History();
     static Observer observer;
-    static int observerStep = 1;
-    static Chessboard_NEW observerChessboard;
+    static int observerStep = 0;
+    static Chessboard observerChessboard;
     static String username;
     static String[] listData;
 
@@ -68,6 +65,11 @@ public class Client {
     public static void setCountTime(int time, int password) {
         if (password == Client.password) {
             myGUI.setCountTime(time);
+        }
+    }
+    public static void timeOver(int password) {
+        if (password == Client.password) {
+            myGUI.timeOver();
         }
     }
 
@@ -334,29 +336,44 @@ public class Client {
 
 
             try {
-                Thread.sleep(50);
+                Thread.sleep(100);
             } catch (Exception ignore) {
 
             }
         }
 
         private void observerPaint() {
-            mainFramePanel.removeAll();
 
-            mainFramePanel.add(mapImgLabel);
-            mainFramePanel.add(playbackButtonPanel);
+            mapFramePanel.removeAll();
+            mapFramePanel.setLayout(null);
 
-            mainFrame.pack();
+            mainFrame.setContentPane(mapFramePanel);
+
+            mapImgLabel.setBounds(0, 0, 1000, 700);
+            playbackButtonPanel.setBounds(1000, 0, 200, 700);
+
+            mapFramePanel.add(mapImgLabel);
+            mapFramePanel.add(playbackButtonPanel);
+
+            mainFrame.setLocation(100, 50);
+            mainFrame.setSize(1200, 735);
+
+            try {
+                observer.setChessboard(observerStep);
+            } catch (Exception ignore) {
+
+            }
+            updateObserverPaint();
         }
 
         private void updateObserverPaint() {
 
-            mainFramePanel.removeAll();
+            mapFramePanel.removeAll();
 
             drawAnimalsByObserver();
 
-            mainFramePanel.add(mapImgLabel);
-            mainFramePanel.add(playbackButtonPanel);
+            mapFramePanel.add(mapImgLabel);
+            mapFramePanel.add(playbackButtonPanel);
 
             mainFrame.repaint();
 
@@ -369,10 +386,9 @@ public class Client {
 
 
         private void drawAnimalsByObserver() {
-            mainFramePanel.setLayout(null);
-            Chessboard_NEW chessboard = observer.getChessboard();
-            for (int i = 1; i <= Chessboard_NEW.getSizeY(); i++) {
-                for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
+            Chessboard chessboard = observer.getChessboard();
+            for (int i = 1; i <= Chessboard.getSizeY(); i++) {
+                for (int j = 1; j <= Chessboard.getSizeX(); j++) {
                     Chess chess = chessboard.getChess(j, i);
                     if (chess != null) {
                         int posX = 50 + 80 * j;
@@ -384,17 +400,16 @@ public class Client {
 
                         imgLabel.setBounds(posX, posY, 116, 80);
 
-                        mainFramePanel.add(imgLabel);
+                        mapFramePanel.add(imgLabel);
                     }
                 }
             }
-            mainFramePanel.setLayout(new BoxLayout(mainFramePanel, BoxLayout.X_AXIS));
         }
 
         private void drawAnimals() {
-            Chessboard_NEW chessboard = game.getChessboard();
-            for (int i = 1; i <= Chessboard_NEW.getSizeY(); i++) {
-                for (int j = 1; j <= Chessboard_NEW.getSizeX(); j++) {
+            Chessboard chessboard = game.getChessboard();
+            for (int i = 1; i <= Chessboard.getSizeY(); i++) {
+                for (int j = 1; j <= Chessboard.getSizeX(); j++) {
                     Chess chess = chessboard.getChess(j, i);
                     if (chess != null) {
                         int posX = 50 + 80 * j;
@@ -426,10 +441,10 @@ public class Client {
         }
 
         private void loadImg() {
-            Chessboard_NEW chessboard = new Chessboard_NEW();
+            Chessboard chessboard = new Chessboard();
             chessboard.initBoard();
-            for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
-                for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+            for (int i = 1; i <= Chessboard.getSizeX(); i++) {
+                for (int j = 1; j <= Chessboard.getSizeY(); j++) {
                     Chess chess = chessboard.getChess(i, j);
                     if (chess != null) {
                         int id = chess.getID();
@@ -528,8 +543,22 @@ public class Client {
         }
 
         public void setCountTime(int time) {
-            timeLabel.setText("%d".formatted(time));
+            if (time != -1) {
+                timeLabel.setText("%d".formatted(time));
+            } else {
+                timeLabel.setText("");
+            }
             mainFrame.repaint();
+        }
+
+        public void timeOver() {
+            try {
+                writer.write("Action 0 0 0 0");
+                writer.newLine();
+                writer.flush();
+            } catch (Exception ignore) {
+                JOptionPane.showMessageDialog(mapFramePanel, "服务器连接错误");
+            }
         }
 
 
@@ -1064,7 +1093,7 @@ public class Client {
         }
 
         private void isLegalHistory(BufferedReader fHistoryReader, int size) throws Exception {
-            Chessboard_NEW testBoard = new Chessboard_NEW();
+            Chessboard testBoard = new Chessboard();
             testBoard.initBoard();
             for (int i = 1; i <= size; i++) {
                 String line = fHistoryReader.readLine();
@@ -1103,7 +1132,7 @@ public class Client {
                     BufferedReader fHistoryReader = new BufferedReader(new FileReader(fHistory));
                     int size = Integer.parseInt(fHistoryReader.readLine());
                     int[][][] history = new int[3000][2][2];
-                    Chessboard_NEW testBoard = new Chessboard_NEW();
+                    Chessboard testBoard = new Chessboard();
                     testBoard.initBoard();
                     for (int i = 1; i <= size; i++) {
                         String line = fHistoryReader.readLine();

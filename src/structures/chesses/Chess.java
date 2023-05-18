@@ -1,6 +1,6 @@
 package structures.chesses;
 
-import structures.Chessboard_NEW;
+import structures.Chessboard;
 import structures.terrains.Terrain;
 
 import javax.swing.*;
@@ -16,8 +16,8 @@ public class Chess {
     private ImageIcon imgRed;
     private ImageIcon imgBlueGrey;
     private ImageIcon imgRedGrey;
-    private Chessboard_NEW chessboard;
-    public Chess(int team, int chessID, String chessName, Chessboard_NEW chessboard) {
+    private Chessboard chessboard;
+    public Chess(int team, int chessID, String chessName, Chessboard chessboard) {
         // 红方在左，team编号为-1；蓝方在右，team编号为1
         this.team = team;
         // chessID 和动物实力正相关，象是8，鼠是1
@@ -57,7 +57,7 @@ public class Chess {
     }
     public int getCapacity(int[] pos) {
         int ret = capacity;
-        Terrain terrain = Chessboard_NEW.getTerrain(pos);
+        Terrain terrain = Chessboard.getTerrain(pos);
         if (terrain.getId() == 20 && team * terrain.getTeam() == -1) {
             ret = 0;
         }
@@ -86,7 +86,7 @@ public class Chess {
             return imgRedGrey;
         }
     }
-    public Chessboard_NEW getChessboard() {
+    public Chessboard getChessboard() {
         return chessboard;
     }
 
@@ -162,7 +162,7 @@ public class Chess {
      */
     public static boolean isOutOfBound(int[] pos) {
         boolean ret = false;
-        if (pos[0] <= 0 || pos[0] > Chessboard_NEW.getSizeX() || pos[1] <= 0 || pos[1] > Chessboard_NEW.getSizeY()) {
+        if (pos[0] <= 0 || pos[0] > Chessboard.getSizeX() || pos[1] <= 0 || pos[1] > Chessboard.getSizeY()) {
             ret = true;
         }
         return ret;
@@ -174,10 +174,10 @@ public class Chess {
      * @return boolean 遭遇河流
      */
     protected static boolean isInRiver(int[] pos) {
-        return Chessboard_NEW.getTerrain(pos).getId() == 10;
+        return Chessboard.getTerrain(pos).getId() == 10;
     }
     protected static boolean isDen(int[] pos, int team) {
-        return Chessboard_NEW.getTerrain(pos).getId() == 30 && Chessboard_NEW.getTerrain(pos).getTeam() == team;
+        return Chessboard.getTerrain(pos).getId() == 30 && Chessboard.getTerrain(pos).getTeam() == team;
     }
 
     /**

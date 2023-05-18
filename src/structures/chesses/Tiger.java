@@ -1,11 +1,9 @@
 package structures.chesses;
 
-import structures.Chessboard_NEW;
-
-import java.util.ArrayList;
+import structures.Chessboard;
 
 public class Tiger extends ChessJump{
-    public Tiger(int team, Chessboard_NEW chessboard) {
+    public Tiger(int team, Chessboard chessboard) {
         super(team, 6, "Tiger", chessboard);
     }
 

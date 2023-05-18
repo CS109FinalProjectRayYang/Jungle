@@ -1,7 +1,7 @@
 package structures.players;
 
 import structures.ChessWithPos;
-import structures.Chessboard_NEW;
+import structures.Chessboard;
 import structures.Game;
 import structures.chesses.Chess;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CP_Monkey extends ComputerPlayer{
     @Override
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
+    public void takeAction(Chessboard chessboard, int nowPlayer, Game game) {
         int[] nowPos;
         int[] nextPos = new int[2];
         ArrayList<ChessWithPos> myChessOK = new ArrayList<>();//可以走的所有棋子

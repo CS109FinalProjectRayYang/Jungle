@@ -1,11 +1,11 @@
 package structures.chesses;
 
-import structures.Chessboard_NEW;
+import structures.Chessboard;
 
 import java.util.ArrayList;
 
 public class ChessJump extends Chess {
-    public ChessJump(int team, int chessID, String chessName, Chessboard_NEW chessboard) {
+    public ChessJump(int team, int chessID, String chessName, Chessboard chessboard) {
         super(team, chessID, chessName, chessboard);
     }
     @Override
@@ -46,7 +46,7 @@ public class ChessJump extends Chess {
                         // 无论跳到对岸还是被老鼠挡路都以break停下
                         // 如果被挡路，则当前的nextPos应该在河里，无法通过isLegal判断，因此达成被老鼠挡路时不能跳跃的效果
                         // 如果不被挡路，则nextPos应当在对岸，如果对岸有能吃的动物，则应当吃掉，如果对岸有吃不了的动物，亦无法通过isLegal判断，达成期望效果
-                        if (Chessboard_NEW.getTerrain(nextPos).getId() != 10) {
+                        if (Chessboard.getTerrain(nextPos).getId() != 10) {
 
                             // 如果当前坐标不再是河，则说明已经来到对岸
                             break;

@@ -17,7 +17,7 @@ import java.util.Scanner;
  * {@code @Author}  : RayOvO
  */
 
-public class Chessboard_NEW {
+public class Chessboard {
     /**
      * 棋盘的长宽以及地形为静态常量
      */
@@ -34,7 +34,7 @@ public class Chessboard_NEW {
      * 构造函数，创建棋盘地形
      */
 
-    public Chessboard_NEW(Chessboard_NEW chessboardOld) {
+    public Chessboard(Chessboard chessboardOld) {
         if (!isTerrainCreated) {
             createTerrains();
         }
@@ -44,7 +44,7 @@ public class Chessboard_NEW {
             }
         }
     }
-    public Chessboard_NEW() {
+    public Chessboard() {
         if (!isTerrainCreated) {
             createTerrains();
         }
@@ -111,6 +111,8 @@ public class Chessboard_NEW {
         chessMap[8][2] = new Dog(1, this);
         chessMap[9][1] = new Lion(1, this);
         chessMap[7][1] = new Rat(1, this);
+
+        chessMap[0][0] = new FictionChess(this);
     }
 
     /**
@@ -244,7 +246,7 @@ public class Chessboard_NEW {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Chessboard_NEW chessboardNew = new Chessboard_NEW();
+        Chessboard chessboardNew = new Chessboard();
         chessboardNew.initBoard();
         while (chessboardNew.isEnd() == 0) {
             chessboardNew.printBoard();

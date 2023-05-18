@@ -1,8 +1,7 @@
 package structures.players;
 
 import structures.ChessWithPos;
-import structures.Chessboard_NEW;
-import structures.Game;
+import structures.Chessboard;
 import structures.chesses.Chess;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class ComputerPlayer extends Player{
      * @param chessboard
      * @return
      */
-    public static double evaluateMap(Chessboard_NEW chessboard, int countLoop) {
+    public static double evaluateMap(Chessboard chessboard, int countLoop) {
         double ret = 0;
 
         int countBlueChess = 0;
@@ -47,8 +46,8 @@ public class ComputerPlayer extends Player{
         ArrayList<ChessWithPos> redAtkChess = new ArrayList<>();
         ArrayList<ChessWithPos> redEnemyChess = new ArrayList<>();
 
-        for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
-            for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+        for (int i = 1; i <= Chessboard.getSizeX(); i++) {
+            for (int j = 1; j <= Chessboard.getSizeY(); j++) {
                 int[] pos = new int[]{i, j};
                 Chess chess = chessboard.getChess(pos);
                 if (chess != null) {
@@ -67,7 +66,7 @@ public class ComputerPlayer extends Player{
                         blueEnemyChess.add(new ChessWithPos(chess, pos));
                     }
                     // 老鼠河流价值
-                    if (chess.getID() == 1 && Chessboard_NEW.getTerrain(pos).getId() == 10) {
+                    if (chess.getID() == 1 && Chessboard.getTerrain(pos).getId() == 10) {
                         ret += 3 * chess.getTeam();
                     }
 
@@ -140,7 +139,7 @@ public class ComputerPlayer extends Player{
      * @param pos
      * @return
      */
-    private static double evaluateChess(Chessboard_NEW chessboard, Chess chess, int[] pos) {
+    private static double evaluateChess(Chessboard chessboard, Chess chess, int[] pos) {
         double ret;
         int initialValue = chess.getID();
         if (initialValue == 1) initialValue = 8;
@@ -179,7 +178,7 @@ public class ComputerPlayer extends Player{
         return ret;
     }
 
-    private static double evaluateDefChess(Chessboard_NEW chessboard, ArrayList<ChessWithPos> defChesses, int team) {
+    private static double evaluateDefChess(Chessboard chessboard, ArrayList<ChessWithPos> defChesses, int team) {
         double value = 0;
         for (ChessWithPos defChessWithPos : defChesses) {
             Chess enemyChess = defChessWithPos.getChess();
@@ -211,7 +210,7 @@ public class ComputerPlayer extends Player{
         }
         return ret;
     }
-    private static double evaluateDefTrap(Chessboard_NEW chessboard, ArrayList<int[]> trapPoses, int team) {
+    private static double evaluateDefTrap(Chessboard chessboard, ArrayList<int[]> trapPoses, int team) {
         double ret = 0;
         for (int[] trapPos : trapPoses) {
             int dist = getDistFromDefAnimal(chessboard, trapPos, team);
@@ -219,10 +218,10 @@ public class ComputerPlayer extends Player{
         }
         return ret;
     }
-    private static int getDistFromDefAnimal(Chessboard_NEW chessboard, int[] trapPos, int team) {
+    private static int getDistFromDefAnimal(Chessboard chessboard, int[] trapPos, int team) {
         int dist;
         OUT:
-        for (dist = 1; dist < Chessboard_NEW.getSizeY() + Chessboard_NEW.getSizeX(); dist++) {
+        for (dist = 1; dist < Chessboard.getSizeY() + Chessboard.getSizeX(); dist++) {
             for (int i = -dist; i <= dist; i++) {
                 int j = dist - Math.abs(i);
                 int[] nextPos = new int[]{trapPos[0] + i, trapPos[1] + j};
@@ -251,10 +250,10 @@ public class ComputerPlayer extends Player{
      * @param pos
      * @return
      */
-    private static int getDistFromEnemy(Chessboard_NEW chessboard, Chess chess, int[] pos) {
+    private static int getDistFromEnemy(Chessboard chessboard, Chess chess, int[] pos) {
         int dist;
         OUT:
-        for (dist = 1; dist < Chessboard_NEW.getSizeY() + Chessboard_NEW.getSizeX(); dist++) {
+        for (dist = 1; dist < Chessboard.getSizeY() + Chessboard.getSizeX(); dist++) {
             for (int i = -dist; i <= dist; i++) {
                 int j = dist - Math.abs(i);
                 int[] nextPos = new int[]{pos[0] + i, pos[1] + j};
@@ -267,12 +266,12 @@ public class ComputerPlayer extends Player{
         return dist;
     }
 
-    private static boolean whetherEnemy(Chessboard_NEW chessboard, Chess chess, int[] nextPos) {
+    private static boolean whetherEnemy(Chessboard chessboard, Chess chess, int[] nextPos) {
         if (!Chess.isOutOfBound(nextPos)) {
             Chess nextPosChess = chessboard.getChess(nextPos);
             if (nextPosChess != null && nextPosChess.getTeam() * chess.getTeam() == -1) {
                 if (nextPosChess.ableToEat(chess.getCapacity(nextPos))) {
-                    return nextPosChess.getID() != 1 || Chessboard_NEW.getTerrain(nextPos).getId() != 10;
+                    return nextPosChess.getID() != 1 || Chessboard.getTerrain(nextPos).getId() != 10;
                 }
             }
         }
@@ -287,7 +286,7 @@ public class ComputerPlayer extends Player{
         return input - input % littleNumber;
     }
     public static void main(String[] args) {
-        Chessboard_NEW chessboard = new Chessboard_NEW();
+        Chessboard chessboard = new Chessboard();
         chessboard.initBoard();
         chessboard.moveChess(new int[]{1, 1}, new int[]{2, 1});
         ComputerPlayer ai = new ComputerPlayer();

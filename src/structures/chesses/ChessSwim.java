@@ -1,11 +1,11 @@
 package structures.chesses;
 
-import structures.Chessboard_NEW;
+import structures.Chessboard;
 
 import java.util.ArrayList;
 
 public class ChessSwim extends Chess{
-    public ChessSwim(int team, int chessID, String chessName, Chessboard_NEW chessboard) {
+    public ChessSwim(int team, int chessID, String chessName, Chessboard chessboard) {
         super(team, chessID, chessName, chessboard);
     }
     @Override

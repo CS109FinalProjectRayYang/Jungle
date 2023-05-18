@@ -1,7 +1,6 @@
 package structures.players;
 
-import structures.Chessboard_NEW;
-import structures.Chessboard_OLD;
+import structures.Chessboard;
 import structures.Game;
 
 public class Player {
@@ -13,7 +12,7 @@ public class Player {
     public Player(int identity) {
         this.identity = identity;
     }
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
+    public void takeAction(Chessboard chessboard, int nowPlayer, Game game) {
 
     }
     public int getIdentity() {

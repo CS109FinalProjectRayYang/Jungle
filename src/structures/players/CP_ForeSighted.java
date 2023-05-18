@@ -1,6 +1,6 @@
 package structures.players;
 
-import structures.Chessboard_NEW;
+import structures.Chessboard;
 import structures.Game;
 import structures.chesses.Chess;
 
@@ -18,21 +18,21 @@ public class CP_ForeSighted extends ComputerPlayer {
     int countDeadLoop = 0;
     int countLoop = 0;
     @Override
-    public void takeAction(Chessboard_NEW chessboard, int nowPlayer, Game game) {
+    public void takeAction(Chessboard chessboard, int nowPlayer, Game game) {
         overCount = 0;
         countLoop++;
         double maxValue = - nowPlayer * 100000;
         int[] maxPos = new int[2];
         int[] maxNextPos = new int[2];
-        for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
-            for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+        for (int i = 1; i <= Chessboard.getSizeX(); i++) {
+            for (int j = 1; j <= Chessboard.getSizeY(); j++) {
                 int[] pos = new int[]{i, j};
                 if (countDeadLoop < 7 || !Arrays.equals(pos, lastChessPos)) {
                     Chess chessOnPos = chessboard.getChess(pos);
                     if (chessOnPos != null && chessOnPos.getTeam() == nowPlayer) {
                         ArrayList<int[]> legalMoves = chessOnPos.getLegalMove(pos);
                         for (int[] nextPos : legalMoves) {
-                            Chessboard_NEW chessboardNew = new Chessboard_NEW(chessboard);
+                            Chessboard chessboardNew = new Chessboard(chessboard);
                             chessboardNew.moveChess(pos, nextPos);
                             double value = search(chessboardNew, -nowPlayer, -100000, 100000, 1);
                             if (value * nowPlayer > maxValue * nowPlayer) {
@@ -53,10 +53,10 @@ public class CP_ForeSighted extends ComputerPlayer {
         lastChessPos = maxNextPos;
         game.input(maxPos, maxNextPos, "%s: (%d, %d) -> (%d, %d)".formatted(game.getChessboard().getChess(maxPos).getChessName(), maxPos[0], maxPos[1], maxNextPos[0], maxNextPos[1]));
     }
-    private double search(Chessboard_NEW chessboard, int nowPlayer, double alpha, double beta, int countTurn) {
+    private double search(Chessboard chessboard, int nowPlayer, double alpha, double beta, int countTurn) {
         overCount++;
         if (overCount % 100000 == 0) {
-            System.out.printf("Searching for %d hundred thousand times\n", overCount / 100000);
+//            System.out.printf("Searching for %d hundred thousand times\n", overCount / 100000);
         }
         if (chessboard.isEnd() != 0) {
             return chessboard.isEnd() * 10000;
@@ -66,14 +66,14 @@ public class CP_ForeSighted extends ComputerPlayer {
             double ret = -nowPlayer * 100000;
 
             OUT:
-            for (int i = 1; i <= Chessboard_NEW.getSizeX(); i++) {
-                for (int j = 1; j <= Chessboard_NEW.getSizeY(); j++) {
+            for (int i = 1; i <= Chessboard.getSizeX(); i++) {
+                for (int j = 1; j <= Chessboard.getSizeY(); j++) {
                     int[] pos = new int[]{i, j};
                     Chess chessOnPos = chessboard.getChess(pos);
                     if (chessOnPos != null && chessOnPos.getTeam() == nowPlayer) {
                         ArrayList<int[]> legalMoves = chessOnPos.getLegalMove(pos);
                         for (int[] nextPos : legalMoves) {
-                            Chessboard_NEW chessboardNew = new Chessboard_NEW(chessboard);
+                            Chessboard chessboardNew = new Chessboard(chessboard);
                             chessboardNew.moveChess(pos, nextPos);
                             double value = search(chessboardNew, -nowPlayer, alpha, beta, countTurn + 1);
                             double noise = ran.nextDouble(0.02) - 0.01;
