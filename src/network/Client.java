@@ -107,6 +107,7 @@ public class Client {
         }
     }
     private static class GUI {
+        boolean isFirstAttempt = false;
         LoginGUI loginGUI;
         //当前页面
         // 0 : 无页面
@@ -1382,7 +1383,11 @@ public class Client {
             mainFrame.setSize(700, 500);
             mainFrame.repaint();
         }
+        private void loadFindGame() {
+
+        }
         private void findGamePaint() {
+            isFirstAttempt = true;
             mainFramePanel.removeAll();
 
             onlinePage.removeAll();
@@ -1415,29 +1420,32 @@ public class Client {
             createRoom.setBounds(420, 60, 130, 40);
 
             enterRoom.addActionListener(e -> {
-                int i = roomList.getSelectedIndex();
-                if (i > 0) {
-                    int flag = JOptionPane.showConfirmDialog(mainFrame, "是否加入该房间？");
-                    if (flag == JOptionPane.OK_OPTION) {
-                        try {
-                            writer.write("joinRoom %s %d".formatted(username, i));
-                            writer.newLine();
-                            writer.flush();
-                            String command = reader.readLine();
-                            if (command.equals("joinRoomSuccessfully")) {
-                                game = new Game(new NetworkPlayer(), new HumanPlayer());
-                                gamePaint();
-                                TReceive tReceive = new TReceive();
-                                tReceive.start();
-                            } else {
-                                throw new Exception();
+                if (isFirstAttempt) {
+                    isFirstAttempt = false;
+                    int i = roomList.getSelectedIndex();
+                    if (i > 0) {
+                        int flag = JOptionPane.showConfirmDialog(mainFrame, "是否加入该房间？");
+                        if (flag == JOptionPane.OK_OPTION) {
+                            try {
+                                writer.write("joinRoom %s %d".formatted(username, i));
+                                writer.newLine();
+                                writer.flush();
+                                String command = reader.readLine();
+                                if (command.equals("joinRoomSuccessfully")) {
+                                    game = new Game(new NetworkPlayer(), new HumanPlayer());
+                                    gamePaint();
+                                    TReceive tReceive = new TReceive();
+                                    tReceive.start();
+                                } else {
+                                    throw new Exception();
+                                }
+                            } catch (Exception ignore) {
+                                JOptionPane.showMessageDialog(mainFrame, "服务器连接错误1");
                             }
-                        } catch (Exception ignore) {
-                            JOptionPane.showMessageDialog(mainFrame, "服务器连接错误1");
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(mainFrame, "请选择要加入的房间");
                     }
-                } else {
-                    JOptionPane.showMessageDialog(mainFrame, "请选择要加入的房间");
                 }
             });
             createRoom.addActionListener(e -> {
