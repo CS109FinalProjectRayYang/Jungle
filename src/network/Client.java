@@ -138,6 +138,7 @@ public class Client {
         JPanel onlinePage = new JPanel();
 
         //按钮
+        JButton backButtonInPlayback = new JButton("返回");
         JButton localGameButton = new JButton("本地游戏");
         JButton onlineGameButton = new JButton("联机对战");
         JButton exitGameButton = new JButton("退出游戏");
@@ -843,7 +844,9 @@ public class Client {
             lastStepButton.setFont(buttonFont);
             jumpStepButton.setFont(buttonFont);
             jumpStepBox.setFont(buttonFont);
+            backButtonInPlayback.setFont(buttonFont);
 
+            backButtonInPlayback.addActionListener(e -> initPaint());
             nextStepButton.addActionListener(e -> {
                 if (observerStep < observer.getSize()) {
                     observerStep++;
@@ -899,7 +902,7 @@ public class Client {
             playbackButtonPanel.add(lastStepButton);
             playbackButtonPanel.add(jumpStepBox);
             playbackButtonPanel.add(jumpStepButton);
-            playbackButtonPanel.add(backInitButton);
+            playbackButtonPanel.add(backButtonInPlayback);
         }
 
 
@@ -1438,23 +1441,50 @@ public class Client {
                 }
             });
             createRoom.addActionListener(e -> {
-                String roomName = JOptionPane.showInputDialog(mainFrame, "房间名:");
-                try {
-                    writer.write("newRoom %s %s".formatted(username, roomName));
-                    writer.newLine();
-                    writer.flush();
-//                    waitingPaint("等待加入...");
-                    findGamePaint();
-                    String command = reader.readLine();
-                    if (command.equals("gameBegin")) {
-                        game = new Game(new HumanPlayer(), new NetworkPlayer());
-                        gamePaint();
-                        TReceive tReceive = new TReceive();
-                        tReceive.start();
+                String roomName;
+                do {
+                    roomName = JOptionPane.showInputDialog(mainFrame, "房间名:");
+                    if (roomName == null) {
+                        break;
                     }
-                } catch (Exception ignore) {
-                    JOptionPane.showMessageDialog(mainFrame, "服务器连接错误2");
-                    initPaint();
+                    if (roomName.contains(" ")) {
+                        JOptionPane.showMessageDialog(mainFrame, "房间名不能含有空格！");
+                    }
+                } while (roomName.contains(" "));
+                if (roomName != null && !roomName.equals("")) {
+                    try {
+                        writer.write("newRoom %s %s".formatted(username, roomName));
+                        writer.newLine();
+                        writer.flush();
+//                    waitingPaint("等待加入...");
+                        findGamePaint();
+                        Thread waitingInformThread = new Thread() {
+                            public void run() {
+                                try {
+                                    String command = reader.readLine();
+                                    if (command.equals("gameBegin")) {
+                                        game = new Game(new HumanPlayer(), new NetworkPlayer());
+                                        gamePaint();
+                                        TReceive tReceive = new TReceive();
+                                        tReceive.start();
+                                    }
+                                } catch (Exception ignore) {
+
+                                }
+                            }
+                        };
+                        waitingInformThread.start();
+//                        String command = reader.readLine();
+//                        if (command.equals("gameBegin")) {
+//                            game = new Game(new HumanPlayer(), new NetworkPlayer());
+//                            gamePaint();
+//                            TReceive tReceive = new TReceive();
+//                            tReceive.start();
+//                        }
+                    } catch (Exception ignore) {
+                        JOptionPane.showMessageDialog(mainFrame, "服务器连接错误2");
+                        initPaint();
+                    }
                 }
             });
 
